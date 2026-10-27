@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applicants | SKILL2EARN</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+
+  <style>
+    :root {
+      --navy: #142b59;
+      --blue: #2864d7;
+      --background: #f4f7fc;
+      --border: #e2e8f0;
+      --text: #27364d;
+      --muted: #718096;
+      --green: #168653;
+      --red: #b42318;
+      --amber: #956300;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      padding: 20px 5%;
+      background: white;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      color: var(--navy);
+      font-size: 22px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .brand span { color: var(--blue); }
+
+    main {
+      width: min(1250px, 92%);
+      margin: 32px auto;
+    }
+
+    h1, h2, h3 { color: var(--navy); }
+
+    h1 { margin-bottom: 8px; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 25px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 11px 15px;
+      border-radius: 9px;
+      background: #edf2fb;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 10px;
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .panel {
+      padding: 23px;
+      margin-bottom: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(20, 43, 89, .035);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d6deeb;
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .notice {
+      display: none;
+      padding: 13px;
+      margin-bottom: 18px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notice.show { display: block; }
+    .notice.error { background: #fff0f0; color: var(--red); }
+    .notice.success { background: #eaf8f0; color: #176b43; }
+    .notice.info { background: #edf3ff; color: #2457b7; }
+
+    .application-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .application {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .application-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .application h3 { margin: 0 0 6px; }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #edf3ff;
+      color: #2457b7;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+
+    .badge.accepted { background: #e5f8ed; color: #137547; }
+    .badge.rejected { background: #fff0f0; color: #b42318; }
+    .badge.pending { background: #fff5dc; color: #875b00; }
+    .badge.reviewing { background: #eaf1ff; color: #2457b7; }
+
+    .detail {
+      margin: 15px 0;
+      padding: 14px;
+      border-radius: 9px;
+      background: #f7f9fd;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 13px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--blue);
+      color: white;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    button.secondary { background: #edf2fb; color: var(--navy); }
+    button.accept { background: #168653; }
+    button.reject { background: #fff0f0; color: #b42318; }
+    button:disabled { opacity: .55; cursor: wait; }
+
+    .empty {
+      padding: 30px 15px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      main { margin-top: 22px; }
+      .stats { gap: 9px; }
+      .stat { padding: 15px; }
+      .stat-value { font-size: 23px; }
+      .filters { grid-template-columns: 1fr; }
+      .panel { padding: 16px; }
+    }
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a class="brand" href="dashboard.html">SKILL<span>2</span>EARN</a>
+  </header>
+
+  <main>
+    <div class="heading">
+      <div>
+        <h1>Applicants</h1>
+        <p class="muted">
+          Review applications submitted to your job listings and manage each applicant's status.
+        </p>
+      </div>
+      <a class="button" href="jobs.html">Manage Job Listings</a>
+    </div>
+
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+    <section class="stats" aria-label="Application statistics">
+      <div class="stat">
+        <span class="stat-label">Total Applications</span>
+        <strong id="totalCount" class="stat-value">—</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Pending</span>
+        <strong id="pendingCount" class="stat-value">—</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Reviewing</span>
+        <strong id="reviewingCount" class="stat-value">—</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Accepted</span>
+        <strong id="acceptedCount" class="stat-value">—</strong>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Applications Received</h2>
+      <p class="muted">
+        Only applications linked to your own job listings should appear here.
+      </p>
+
+      <div class="filters">
+        <input id="searchInput" type="search"
+               placeholder="Search by job title or applicant ID"
+               aria-label="Search applications">
+
+        <select id="statusFilter" aria-label="Filter applications by status">
+          <option value="all">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="reviewing">Reviewing</option>
+          <option value="accepted">Accepted</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <p id="resultCount" class="count"></p>
+
+      <div id="applicationList" class="application-list">
+        <div class="empty">Loading applications…</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const $ = id => document.getElementById(id);
+
+      let client;
+      let currentUser;
+      let jobs = [];
+      let applications = [];
+      let jobOwnerColumn = null;
+      let applicationStudentColumn = null;
+      let applicationStatusColumn = null;
+
+      function showNotice(message, type = "info") {
+        const el = $("notice");
+        el.textContent = message;
+        el.className = "notice show " + type;
+      }
+
+      function escapeHTML(value) {
+        return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        })[char]);
+      }
+
+      function setStats() {
+        $("totalCount").textContent = applications.length;
+        $("pendingCount").textContent = applications.filter(
+          app => String(app.status || "pending").toLowerCase() === "pending"
+        ).length;
+        $("reviewingCount").textContent = applications.filter(
+          app => String(app.status || "").toLowerCase() === "reviewing"
+        ).length;
+        $("acceptedCount").textContent = applications.filter(
+          app => String(app.status || "").toLowerCase() === "accepted"
+        ).length;
+      }
+
+      async function getColumns(table) {
+        const { data, error } = await client.from(table).select("*").limit(1);
+        if (error) {
+          throw new Error("Cannot access the " + table + " table: " + error.message);
+        }
+
+        if (!data || data.length === 0) return null;
+        return new Set(Object.keys(data[0]));
+      }
+
+      async function initialize() {
+        const config = window.SKILL2EARN_SUPABASE_CONFIG;
+        if (!config) throw new Error("Supabase configuration is missing.");
+
+        client = config.getClient();
+
+        const { data: auth, error: authError } = await client.auth.getUser();
+        if (authError || !auth.user) {
+          location.replace("login.html");
+          return;
+        }
+
+        currentUser = auth.user;
+
+        const { data: profile, error: profileError } = await client
+          .from("profiles")
+          .select("role")
+          .eq("id", currentUser.id)
+          .maybeSingle();
+
+        if (profileError) throw new Error("Unable to verify your role: " + profileError.message);
+
+        if (!profile || profile.role !== "employer") {
+          location.replace("../index.html");
+          return;
+        }
+
+        await loadOwnedJobs();
+      }
+
+      async function loadOwnedJobs() {
+        const { data, error } = await client.from("jobs").select("*").limit(1);
+
+        if (error) throw new Error("Cannot inspect the jobs table: " + error.message);
+
+        if (!data || data.length === 0) {
+          $("applicationList").innerHTML =
+            '<div class="empty">No job rows are available yet. Create at least one job listing, then return here. If jobs already exist but are hidden by RLS, check the jobs SELECT policy.</div>';
+          jobs = [];
+          applications = [];
+          setStats();
+          return;
+        }
+
+        const columns = new Set(Object.keys(data[0]));
+        jobOwnerColumn = ["employer_id", "owner_id", "user_id", "created_by"]
+          .find(column => columns.has(column));
+
+        if (!jobOwnerColumn) {
+          throw new Error(
+            "Your jobs table has no recognized owner column. " +
+            "The expected options are employer_id, owner_id, user_id, or created_by. " +
+            "Inspect public.jobs before proceeding."
+          );
+        }
+
+        const { data: ownedJobs, error: jobsError } = await client
+          .from("jobs")
+          .select("*")
+          .eq(jobOwnerColumn, currentUser.id)
+          .order("created_at", { ascending: false });
+
+        if (jobsError) throw new Error("Unable to load your jobs: " + jobsError.message);
+
+        jobs = ownedJobs || [];
+
+        if (!jobs.length) {
+          applications = [];
+          setStats();
+          renderApplications();
+          return;
+        }
+
+        await loadApplications();
+      }
+
+      async function loadApplications() {
+        const jobIds = jobs.map(job => job.id).filter(Boolean);
+
+        if (!jobIds.length) {
+          applications = [];
+          setStats();
+          renderApplications();
+          return;
+        }
+
+        const { data, error } = await client
+          .from("applications")
+          .select("*")
+          .in("job_id", jobIds)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error(
+            "Unable to load applications: " + error.message +
+            ". Check the applications SELECT policy and the job_id relationship."
+          );
+        }
+
+        applications = data || [];
+
+        if (applications.length) {
+          const first = applications[0];
+          applicationStudentColumn = ["student_id", "applicant_id", "user_id"]
+            .find(column => Object.prototype.hasOwnProperty.call(first, column)) || null;
+          applicationStatusColumn = Object.prototype.hasOwnProperty.call(first, "status")
+            ? "status" : null;
+        }
+
+        setStats();
+        renderApplications();
+      }
+
+      function renderApplications() {
+        const query = $("searchInput").value.trim().toLowerCase();
+        const selectedStatus = $("statusFilter").value;
+
+        const jobMap = new Map(jobs.map(job => [String(job.id), job]));
+
+        const filtered = applications.filter(app => {
+          const job = jobMap.get(String(app.job_id));
+          const status = String(app.status || "pending").toLowerCase();
+          const studentId = applicationStudentColumn ? app[applicationStudentColumn] : "";
+
+          const searchable = [
+            job && job.title,
+            studentId,
+            app.cover_letter
+          ].join(" ").toLowerCase();
+
+          return (!query || searchable.includes(query)) &&
+                 (selectedStatus === "all" || status === selectedStatus);
+        });
+
+        $("resultCount").textContent =
+          filtered.length + " application(s) shown";
+
+        if (!filtered.length) {
+          $("applicationList").innerHTML =
+            '<div class="empty">No applications match your filters. New applications will appear here when students apply to your listings.</div>';
+          return;
+        }
+
+        $("applicationList").innerHTML = filtered.map(app => {
+          const job = jobMap.get(String(app.job_id));
+          const status = String(app.status || "pending").toLowerCase();
+          const studentId = applicationStudentColumn ? app[applicationStudentColumn] : "Unavailable";
+          const created = app.created_at
+            ? new Date(app.created_at).toLocaleString()
+            : "Date unavailable";
+
+          return `
+            <article class="application">
+              <div class="application-top">
+                <div>
+                  <h3>${escapeHTML(job ? job.title : "Job listing")}</h3>
+                  <div class="muted">Applicant ID: ${escapeHTML(studentId)}</div>
+                  <div class="muted">Applied: ${escapeHTML(created)}</div>
+                </div>
+                <span class="badge ${escapeHTML(status)}">${escapeHTML(status)}</span>
+              </div>
+
+              <div class="detail">
+                <strong>Cover Letter</strong><br>
+                ${escapeHTML(app.cover_letter || "No cover letter was provided.")}
+              </div>
+
+              <div class="actions">
+                <button type="button" data-status="reviewing" data-id="${escapeHTML(app.id)}">Mark Reviewing</button>
+                <button type="button" class="accept" data-status="accepted" data-id="${escapeHTML(app.id)}">Accept</button>
+                <button type="button" class="reject" data-status="rejected" data-id="${escapeHTML(app.id)}">Reject</button>
+                <button type="button" class="secondary" data-status="pending" data-id="${escapeHTML(app.id)}">Reset to Pending</button>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      async function updateApplicationStatus(id, nextStatus, button) {
+        if (!applicationStatusColumn) {
+          throw new Error("The applications table has no status column.");
+        }
+
+        const app = applications.find(item => String(item.id) === String(id));
+        if (!app) throw new Error("Application not found.");
+
+        const job = jobs.find(item => String(item.id) === String(app.job_id));
+        if (!job || String(job[jobOwnerColumn]) !== String(currentUser.id)) {
+          throw new Error("You cannot update an application for a job you do not own.");
+        }
+
+        if (!window.confirm("Change this application's status to " + nextStatus + "?")) {
+          return;
+        }
+
+        button.disabled = true;
+
+        try {
+          const { data, error } = await client
+            .from("applications")
+            .update({ [applicationStatusColumn]: nextStatus })
+            .eq("id", id)
+            .eq("job_id", app.job_id)
+            .select("id");
+
+          if (error) throw error;
+          if (!data || data.length === 0) {
+            throw new Error(
+              "No application was updated. Your Supabase UPDATE policy may not allow this operation."
+            );
+          }
+
+          showNotice("Application status updated to " + nextStatus + ".", "success");
+          await loadApplications();
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      $("applicationList").addEventListener("click", async event => {
+        const button = event.target.closest("[data-status][data-id]");
+        if (!button) return;
+
+        try {
+          await updateApplicationStatus(
+            button.dataset.id,
+            button.dataset.status,
+            button
+          );
+        } catch (error) {
+          console.error(error);
+          showNotice(error.message || "Unable to update the application.", "error");
+        }
+      });
+
+      $("searchInput").addEventListener("input", renderApplications);
+      $("statusFilter").addEventListener("change", renderApplications);
+
+      initialize().catch(error => {
+        console.error(error);
+        $("applicationList").innerHTML =
+          '<div class="empty">The applicants page could not load the required data. Review the error message above.</div>';
+        showNotice(error.message || "Unable to load applicants.", "error");
+      });
+    })();
+  </script>
+</body>
+</html>

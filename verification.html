@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Verification | SKILL2EARN</title>
+  <style>
+    :root {
+      --navy: #102a56;
+      --blue: #2563eb;
+      --bg: #f4f7fc;
+      --border: #dce5f1;
+      --muted: #64748b;
+      --text: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 25px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .brand { color: var(--navy); font-size: 19px; font-weight: 800; }
+    .back { color: var(--blue); text-decoration: none; font-size: 13px; }
+
+    .card {
+      padding: 30px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(16, 42, 86, .06);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #eaf1ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1 { margin: 15px 0 10px; color: var(--navy); font-size: 28px; }
+    .intro { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+    label {
+      display: block;
+      margin: 19px 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font: inherit;
+      background: white;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+    }
+
+    input[type="file"] { padding: 10px; }
+
+    .hint { margin-top: 7px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .privacy {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #f0f7ff;
+      color: #1e40af;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--blue);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .message.error { display: block; background: #fef2f2; color: #991b1b; }
+    .message.success { display: block; background: #f0fdf4; color: #166534; }
+
+    .current-status {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 12px; }
+      .card { padding: 21px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body>
+  <main class="container">
+    <div class="top">
+      <div class="brand">SKILL2EARN</div>
+      <a class="back" href="dashboard.html">← Student Dashboard</a>
+    </div>
+
+    <section class="card">
+      <span class="tag">STUDENT ACCOUNT</span>
+      <h1>Verify your student status</h1>
+      <p class="intro">
+        Submit your school details and a supporting document. Your submission
+        will be reviewed by an authorized administrator before your account
+        receives verified status.
+      </p>
+
+      <form id="verificationForm">
+        <label for="school">School / institution</label>
+        <input id="school" name="school" type="text" maxlength="150"
+               placeholder="Enter your school name" required>
+
+        <label for="course">Course / program</label>
+        <input id="course" name="course" type="text" maxlength="150"
+               placeholder="e.g. Bachelor of Science in Information Technology" required>
+
+        <label for="studentNumber">Student number (optional)</label>
+        <input id="studentNumber" name="studentNumber" type="text" maxlength="80"
+               placeholder="Enter your student number if required">
+
+        <label for="document">Supporting document</label>
+        <input id="document" name="document" type="file"
+               accept=".jpg,.jpeg,.png,.webp,.pdf" required>
+        <p class="hint">
+          Accepted formats: JPG, PNG, WEBP, or PDF. Maximum size: 5 MB.
+          Upload only documents necessary for verification.
+        </p>
+
+        <div class="privacy">
+          <strong>Privacy reminder:</strong> Your document may contain sensitive
+          information. It should be stored in private storage and accessed only
+          by authorized reviewers. Do not upload unrelated personal documents.
+        </div>
+
+        <button id="submitButton" type="submit">Submit for Verification</button>
+      </form>
+
+      <div id="message" class="message" role="status"></div>
+      <div id="currentStatus" class="current-status"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    const BUCKET = "verification-documents";
+    const TABLE = "verification_requests";
+    const MAX_BYTES = 5 * 1024 * 1024;
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+
+    const form = document.getElementById("verificationForm");
+    const button = document.getElementById("submitButton");
+    const message = document.getElementById("message");
+    const statusBox = document.getElementById("currentStatus");
+
+    let db;
+    let user;
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function setBusy(busy) {
+      button.disabled = busy;
+      button.textContent = busy ? "Submitting…" : "Submit for Verification";
+    }
+
+    async function initialize() {
+      try {
+        if (!window.SKILL2EARN_SUPABASE_CONFIG ||
+            !window.SKILL2EARN_SUPABASE_CONFIG.isConfigured()) {
+          showMessage("Supabase is not configured. Check js/supabase-client.js.", "error");
+          form.querySelector("button").disabled = true;
+          return;
+        }
+
+        db = window.SKILL2EARN_SUPABASE_CONFIG.getClient();
+
+        const sessionResult = await db.auth.getSession();
+        user = sessionResult.data?.session?.user;
+
+        if (!user) {
+          window.location.replace("login.html");
+          return;
+        }
+
+        const profileResult = await db.from("profiles")
+          .select("role, school, course")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (profileResult.error) {
+          showMessage("Could not load your profile: " + profileResult.error.message, "error");
+          return;
+        }
+
+        if (!profileResult.data || profileResult.data.role !== "student") {
+          showMessage("This page is available only to student accounts.", "error");
+          form.querySelector("button").disabled = true;
+          return;
+        }
+
+        document.getElementById("school").value = profileResult.data.school || "";
+        document.getElementById("course").value = profileResult.data.course || "";
+
+        const existing = await db.from(TABLE)
+          .select("status, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (!existing.error && existing.data && existing.data.length) {
+          statusBox.style.display = "block";
+          statusBox.textContent = "Latest submission status: " +
+            (existing.data[0].status || "pending") +
+            (existing.data[0].created_at
+              ? " · Submitted: " + new Date(existing.data[0].created_at).toLocaleString()
+              : "");
+        }
+      } catch (error) {
+        showMessage(error.message || "Unable to load the verification page.", "error");
+      }
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      message.className = "message";
+      message.textContent = "";
+
+      if (!db || !user) {
+        showMessage("Your session is not ready. Please sign in again.", "error");
+        return;
+      }
+
+      const school = document.getElementById("school").value.trim();
+      const course = document.getElementById("course").value.trim();
+      const studentNumber = document.getElementById("studentNumber").value.trim();
+      const file = document.getElementById("document").files[0];
+
+      if (!school || !course || !file) {
+        showMessage("Complete the required fields and select a document.", "error");
+        return;
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        showMessage("Unsupported file type. Choose a JPG, PNG, WEBP, or PDF file.", "error");
+        return;
+      }
+
+      if (file.size > MAX_BYTES) {
+        showMessage("The selected file exceeds the 5 MB limit.", "error");
+        return;
+      }
+
+      setBusy(true);
+      let uploadedPath = null;
+
+      try {
+        const extension = file.name.split(".").pop().toLowerCase();
+        const safeExtension = /^[a-z0-9]+$/.test(extension) ? extension : "file";
+        uploadedPath = user.id + "/student/" + crypto.randomUUID() + "." + safeExtension;
+
+        const uploadResult = await db.storage.from(BUCKET).upload(uploadedPath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
+        });
+
+        if (uploadResult.error) {
+          throw new Error("Document upload failed: " + uploadResult.error.message);
+        }
+
+        const insertResult = await db.from(TABLE).insert({
+          user_id: user.id,
+          role: "student",
+          school: school,
+          course: course,
+          student_number: studentNumber || null,
+          document_path: uploadedPath,
+          status: "pending"
+        });
+
+        if (insertResult.error) {
+          // Remove the just-uploaded file if the database submission fails.
+          await db.storage.from(BUCKET).remove([uploadedPath]);
+          throw new Error(
+            "The file uploaded, but the request could not be saved. " +
+            insertResult.error.message +
+            " The verification table may need to be matched to this page's fields."
+          );
+        }
+
+        showMessage(
+          "Your verification request was submitted. Its status is pending until an authorized administrator reviews it.",
+          "success"
+        );
+        form.reset();
+        document.getElementById("school").value = school;
+        document.getElementById("course").value = course;
+        statusBox.style.display = "block";
+        statusBox.textContent = "Latest submission status: pending";
+      } catch (error) {
+        showMessage(error.message || "Submission failed. Please try again.", "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    initialize();
+  })();
+  </script>
+</body>
+</html>

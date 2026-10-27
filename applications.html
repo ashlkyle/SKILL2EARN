@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Applications | SKILL2EARN</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    :root {
+      --navy: #102a56;
+      --blue: #2563eb;
+      --light-blue: #eff6ff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f5f8fc;
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .applications-container {
+      width: min(1100px, 92%);
+      margin: 40px auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: clamp(24px, 4vw, 32px);
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .summary-card {
+      padding: 22px;
+      margin-bottom: 25px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(15, 23, 42, .04);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .summary-number {
+      margin-top: 8px;
+      color: var(--navy);
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filter-button, .primary-button, .secondary-button {
+      display: inline-block;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--white);
+      color: var(--text);
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .filter-button.active, .primary-button {
+      background: var(--blue);
+      color: var(--white);
+      border-color: var(--blue);
+    }
+
+    .applications-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .application-card {
+      padding: 22px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
+    }
+
+    .application-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .application-card h2 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .application-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .application-description {
+      margin: 15px 0;
+      color: #475569;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .status.pending, .status.under-review {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status.accepted, .status.approved, .status.hired {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.rejected, .status.declined {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status.withdrawn, .status.closed, .status.cancelled {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .status.unknown {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .empty-state, .message {
+      padding: 30px 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .empty-state h2 {
+      color: var(--navy);
+    }
+
+    .message.error {
+      color: #991b1b;
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    .message.info {
+      color: #1e40af;
+      background: var(--light-blue);
+      border-color: #bfdbfe;
+    }
+
+    .loading {
+      padding: 35px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .application-footer {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .applications-container { margin: 25px auto; }
+      .application-card { padding: 17px; }
+      .application-top { flex-direction: column; }
+    }
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+
+<body>
+  <main class="applications-container">
+    <header class="page-header">
+      <div>
+        <h1>My Applications</h1>
+        <p>Track your job applications and check their latest status.</p>
+      </div>
+      <a class="primary-button" href="dashboard.html">Find More Jobs</a>
+    </header>
+
+    <section class="summary-card" aria-label="Application summary">
+      <div class="summary-label">Total Applications</div>
+      <div class="summary-number" id="totalApplications">—</div>
+    </section>
+
+    <div class="filters" aria-label="Filter applications">
+      <button type="button" class="filter-button active" data-filter="all">All</button>
+      <button type="button" class="filter-button" data-filter="pending">Pending</button>
+      <button type="button" class="filter-button" data-filter="accepted">Accepted</button>
+      <button type="button" class="filter-button" data-filter="rejected">Rejected</button>
+    </div>
+
+    <div id="pageMessage" role="status" aria-live="polite"></div>
+    <section class="applications-list" id="applicationsList" aria-label="Your applications">
+      <div class="loading">Loading your applications...</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/notifications.js"></script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const list = document.getElementById("applicationsList");
+      const total = document.getElementById("totalApplications");
+      const pageMessage = document.getElementById("pageMessage");
+
+      let applications = [];
+      let currentFilter = "all";
+
+      const escapeHTML = (value) =>
+        String(value ?? "").replace(/[&<>"']/g, character => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[character]);
+
+      const normalizeStatus = (value) =>
+        String(value || "unknown").toLowerCase().trim().replace(/_/g, "-");
+
+      const formatDate = (value) => {
+        if (!value) return "Date unavailable";
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "Date unavailable";
+
+        return date.toLocaleDateString("en-PH", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        });
+      };
+
+      function showMessage(message, type = "info") {
+        pageMessage.innerHTML =
+          `<div class="message ${type}">${escapeHTML(message)}</div>`;
+      }
+
+      function clearMessage() {
+        pageMessage.innerHTML = "";
+      }
+
+      function renderApplications() {
+        const filtered = applications.filter(application => {
+          if (currentFilter === "all") return true;
+
+          const status = normalizeStatus(application.status);
+
+          if (currentFilter === "accepted") {
+            return ["accepted", "approved", "hired"].includes(status);
+          }
+
+          if (currentFilter === "rejected") {
+            return ["rejected", "declined"].includes(status);
+          }
+
+          return status === currentFilter;
+        });
+
+        if (!filtered.length) {
+          const description = applications.length
+            ? "There are no applications in this category."
+            : "You have not applied for any jobs yet.";
+
+          list.innerHTML = `
+            <div class="empty-state">
+              <h2>${applications.length ? "No matching applications" : "No applications yet"}</h2>
+              <p>${escapeHTML(description)}</p>
+              <a class="primary-button" href="dashboard.html">Browse Available Jobs</a>
+            </div>
+          `;
+          return;
+        }
+
+        list.innerHTML = filtered.map(application => {
+          const status = normalizeStatus(application.status);
+          const job = application.job || {};
+          const title = job.title || "Job listing";
+          const description = job.description || "";
+          const jobStatus = job.status || "Unavailable";
+
+          return `
+            <article class="application-card">
+              <div class="application-top">
+                <div>
+                  <h2>${escapeHTML(title)}</h2>
+                  <div class="application-meta">
+                    Applied: ${escapeHTML(formatDate(application.created_at))}
+                  </div>
+                </div>
+                <span class="status ${escapeHTML(status)}">
+                  ${escapeHTML(String(application.status || "Unknown").replace(/_/g, " "))}
+                </span>
+              </div>
+
+              ${description ? `
+                <p class="application-description">${escapeHTML(description)}</p>
+              ` : ""}
+
+              <div class="application-meta">
+                Job listing status: ${escapeHTML(jobStatus)}
+              </div>
+
+              ${application.cover_letter ? `
+                <div class="application-footer">
+                  <strong>Your cover letter:</strong><br>
+                  ${escapeHTML(application.cover_letter)}
+                </div>
+              ` : ""}
+
+              <div class="application-footer">
+                Application ID: ${escapeHTML(application.id || "Unavailable")}
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      async function loadApplications() {
+        list.innerHTML = '<div class="loading">Loading your applications...</div>';
+        clearMessage();
+
+        try {
+          const config = window.SKILL2EARN_SUPABASE_CONFIG;
+
+          if (!config || !config.isConfigured()) {
+            throw new Error(
+              "Supabase is not configured. Check js/supabase-client.js."
+            );
+          }
+
+          const client = config.getClient();
+          const { data: userResult, error: userError } =
+            await client.auth.getUser();
+
+          if (userError || !userResult.user) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          const user = userResult.user;
+
+          const { data: profile, error: profileError } = await client
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          if (profileError) throw profileError;
+
+          if (!profile || profile.role !== "student") {
+            showMessage(
+              "This page is available to student accounts only.",
+              "error"
+            );
+            list.innerHTML = "";
+            return;
+          }
+
+          const { data: rows, error: applicationError } = await client
+            .from("applications")
+            .select("*")
+            .eq("student_id", user.id)
+            .order("created_at", { ascending: false });
+
+          if (applicationError) throw applicationError;
+
+          applications = rows || [];
+
+          // Load job information separately to avoid assuming a specific
+          // relationship name in the Supabase schema.
+          const jobIds = [
+            ...new Set(
+              applications
+                .map(application => application.job_id)
+                .filter(Boolean)
+            )
+          ];
+
+          const jobsById = {};
+
+          if (jobIds.length) {
+            const { data: jobs, error: jobsError } = await client
+              .from("jobs")
+              .select("id,title,description,status")
+              .in("id", jobIds);
+
+            if (jobsError) {
+              // Applications remain useful even if job details are hidden
+              // by database permissions or unavailable.
+              console.warn("Could not load job details:", jobsError.message);
+            } else {
+              (jobs || []).forEach(job => {
+                jobsById[job.id] = job;
+              });
+            }
+          }
+
+          applications = applications.map(application => ({
+            ...application,
+            job: jobsById[application.job_id] || {}
+          }));
+
+          total.textContent = String(applications.length);
+          renderApplications();
+        } catch (error) {
+          console.error("Application page error:", error);
+          total.textContent = "—";
+          list.innerHTML = "";
+          showMessage(
+            error.message ||
+              "Unable to load your applications. Please try again later.",
+            "error"
+          );
+        }
+      }
+
+      document.querySelectorAll("[data-filter]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll("[data-filter]").forEach(item => {
+            item.classList.remove("active");
+          });
+
+          button.classList.add("active");
+          currentFilter = button.dataset.filter;
+          renderApplications();
+        });
+      });
+
+      loadApplications();
+    })();
+  </script>
+</body>
+</html>

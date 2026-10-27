@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login | SKILL2EARN</title>
+    <style>
+        *{box-sizing:border-box}
+        body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Arial,sans-serif;background:#06101f;color:#f8fafc}
+        .card{width:100%;max-width:440px;padding:32px;background:#112138;border:1px solid #29415f;border-radius:18px}
+        .brand{font-size:27px;font-weight:800;color:#60a5fa;letter-spacing:-1px}
+        h1{font-size:25px;margin-bottom:8px}
+        p{color:#b7c5d8;line-height:1.6}
+        label{display:block;margin:19px 0 7px;font-weight:600}
+        input{width:100%;padding:13px;border:1px solid #36506f;border-radius:9px;background:#071426;color:#fff;font-size:15px}
+        button{width:100%;margin-top:24px;padding:14px;border:0;border-radius:9px;background:#2563eb;color:white;font-size:16px;font-weight:700;cursor:pointer}
+        button:disabled{opacity:.6;cursor:wait}
+        a{color:#93c5fd}
+        .foot{text-align:center;margin-top:20px}
+    </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body>
+<main class="card">
+    <div class="brand">SKILL2EARN</div>
+    <h1>Welcome back, student</h1>
+    <p>Log in to manage your profile and discover opportunities.</p>
+
+    <form data-auth="login" data-role="student">
+        <label for="email">School email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+        <button type="submit">Log In</button>
+    </form>
+
+    <p class="foot">New to SKILL2EARN? <a href="register.html">Create an account</a></p>
+    <p class="foot"><a href="../index.html">Back to home</a></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

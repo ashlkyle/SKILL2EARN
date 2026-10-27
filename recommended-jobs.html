@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommended Jobs | SKILL2EARN</title>
+
+  <style>
+    :root {
+      --navy: #142b59;
+      --blue: #2457c5;
+      --light: #f4f7fc;
+      --border: #e3e9f3;
+      --text: #1e293b;
+      --muted: #69778e;
+      --green: #16784a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--blue);
+    }
+
+    main {
+      width: min(1100px, 92%);
+      margin: 35px auto;
+    }
+
+    .hero {
+      padding: 30px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #142b59, #3269d1);
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(25px, 4vw, 36px);
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 650px;
+      line-height: 1.7;
+      color: #e2eaff;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .toolbar h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .toolbar select, .search {
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      font: inherit;
+    }
+
+    .search {
+      width: min(100%, 320px);
+    }
+
+    .job-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+      gap: 18px;
+    }
+
+    .job-card {
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      box-shadow: 0 4px 15px rgba(20, 43, 89, .035);
+    }
+
+    .job-card h3 {
+      margin: 15px 0 8px;
+      font-size: 19px;
+      overflow-wrap: anywhere;
+    }
+
+    .company {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .match-badge {
+      align-self: flex-start;
+      border-radius: 30px;
+      padding: 7px 11px;
+      background: #e0f2e9;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .job-description {
+      line-height: 1.65;
+      font-size: 14px;
+      color: #536079;
+      overflow-wrap: anywhere;
+    }
+
+    .skill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0 15px;
+    }
+
+    .skill-tag {
+      background: #edf2ff;
+      color: #244da2;
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 5px 0 15px;
+    }
+
+    .job-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 14px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .primary {
+      flex: 1;
+      background: var(--blue);
+      color: white;
+    }
+
+    .secondary {
+      background: #edf2ff;
+      color: var(--blue);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      grid-column: 1 / -1;
+    }
+
+    .notice {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px 15px;
+      border-radius: 9px;
+      background: #eaf1ff;
+      color: var(--navy);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 16px 4%; }
+      main { margin: 22px auto; }
+      .hero { padding: 23px; }
+      .toolbar { align-items: stretch; }
+      .toolbar select, .search { width: 100%; }
+    }
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a class="brand" href="dashboard.html">SKILL2EARN</a>
+
+    <nav aria-label="Main navigation">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="recommended-jobs.html" class="active">Recommended Jobs</a>
+      <a href="applications.html">My Applications</a>
+      <a href="verification.html">Verification</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Find opportunities that fit you.</h1>
+      <p>
+        Explore opportunities and discover which jobs align with your skills.
+        Improve your profile to receive more relevant recommendations.
+      </p>
+    </section>
+
+    <div id="notice" class="notice" role="status"></div>
+
+    <section class="toolbar">
+      <h2>Recommended for You</h2>
+
+      <select id="sortSelect" aria-label="Sort job recommendations">
+        <option value="match">Best match</option>
+        <option value="newest">Newest first</option>
+        <option value="budget">Highest budget</option>
+      </select>
+
+      <input
+        id="searchInput"
+        class="search"
+        type="search"
+        placeholder="Search jobs or skills..."
+        aria-label="Search jobs or skills"
+      >
+    </section>
+
+    <section id="jobList" class="job-list" aria-live="polite">
+      <div class="message">Loading recommended jobs...</div>
+    </section>
+  </main>
+
+  <footer>
+    SKILL2EARN · Connecting students with meaningful opportunities
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/job-matching.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const list = document.getElementById("jobList");
+      const notice = document.getElementById("notice");
+      const searchInput = document.getElementById("searchInput");
+      const sortSelect = document.getElementById("sortSelect");
+
+      let db;
+      let profile = {};
+      let jobs = [];
+      let appliedJobIds = new Set();
+      let savedJobIds = new Set();
+      let currentUserId = null;
+
+      function showNotice(message) {
+        notice.textContent = message;
+        notice.style.display = "block";
+      }
+
+      function makeElement(tag, className, text) {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      }
+
+      function getJobSkills(job) {
+        const value = job.skills || job.required_skills || [];
+
+        if (Array.isArray(value)) return value;
+
+        if (typeof value === "string") {
+          return value.split(/[,;\n|]/).map(function (item) {
+            return item.trim();
+          }).filter(Boolean);
+        }
+
+        return [];
+      }
+
+      function formatBudget(value) {
+        if (value === null || value === undefined || value === "") {
+          return "Budget not specified";
+        }
+
+        const amount = Number(value);
+
+        if (Number.isFinite(amount)) {
+          return "₱" + amount.toLocaleString("en-PH");
+        }
+
+        return String(value);
+      }
+
+      function renderJobs() {
+        list.replaceChildren();
+
+        const search = searchInput.value.trim().toLowerCase();
+        const sorting = sortSelect.value;
+
+        let ranked = window.SKILL2EARN_JOB_MATCHING
+          ? window.SKILL2EARN_JOB_MATCHING.rankJobs(profile, jobs)
+          : jobs.filter(function (job) {
+              return !job.status || ["open", "active"].includes(
+                String(job.status).toLowerCase()
+              );
+            }).map(function (job) {
+              return { job: job, score: 0, matchedSkills: [] };
+            });
+
+        ranked = ranked.filter(function (result) {
+          const job = result.job;
+          const text = [
+            job.title,
+            job.description,
+            job.category,
+            job.work_arrangement,
+            ...getJobSkills(job)
+          ].join(" ").toLowerCase();
+
+          return text.includes(search);
+        });
+
+        if (sorting === "newest") {
+          ranked.sort(function (a, b) {
+            return new Date(b.job.created_at || 0) -
+              new Date(a.job.created_at || 0);
+          });
+        } else if (sorting === "budget") {
+          ranked.sort(function (a, b) {
+            return (Number(b.job.budget) || 0) -
+              (Number(a.job.budget) || 0);
+          });
+        } else {
+          ranked.sort(function (a, b) {
+            return b.score - a.score;
+          });
+        }
+
+        if (ranked.length === 0) {
+          list.appendChild(makeElement(
+            "div",
+            "message",
+            "No open jobs match your search right now. Try another keyword or check back later."
+          ));
+          return;
+        }
+
+        ranked.forEach(function (result) {
+          const job = result.job;
+          const card = makeElement("article", "job-card");
+
+          const badge = makeElement(
+            "span",
+            "match-badge",
+            result.score + "% match"
+          );
+
+          card.appendChild(badge);
+          card.appendChild(makeElement("h3", "", job.title || "Untitled job"));
+
+          card.appendChild(makeElement(
+            "div",
+            "company",
+            job.company_name || job.company || "Employer opportunity"
+          ));
+
+          card.appendChild(makeElement(
+            "p",
+            "job-description",
+            job.description || "No job description provided."
+          ));
+
+          const meta = makeElement("div", "job-meta");
+          meta.appendChild(makeElement("span", "", formatBudget(job.budget)));
+
+          if (job.work_arrangement) {
+            meta.appendChild(makeElement("span", "", job.work_arrangement));
+          }
+
+          if (job.duration) {
+            meta.appendChild(makeElement("span", "", job.duration));
+          }
+
+          card.appendChild(meta);
+
+          const skills = makeElement("div", "skill-list");
+
+          getJobSkills(job).slice(0, 8).forEach(function (skill) {
+            skills.appendChild(makeElement("span", "skill-tag", skill));
+          });
+
+          if (skills.childElementCount) card.appendChild(skills);
+
+          if (result.matchedSkills && result.matchedSkills.length) {
+            card.appendChild(makeElement(
+              "p",
+              "job-description",
+              "Matching skills: " + result.matchedSkills.join(", ")
+            ));
+          }
+
+          const actions = makeElement("div", "job-actions");
+
+          const applyButton = makeElement(
+            "button",
+            "primary",
+            appliedJobIds.has(job.id) ? "Already Applied" : "Apply Now"
+          );
+
+          applyButton.type = "button";
+          applyButton.disabled = appliedJobIds.has(job.id);
+          applyButton.addEventListener("click", function () {
+            applyToJob(job, applyButton);
+          });
+
+          const saveButton = makeElement(
+            "button",
+            "secondary",
+            savedJobIds.has(job.id) ? "Saved" : "Save"
+          );
+
+          saveButton.type = "button";
+          saveButton.addEventListener("click", function () {
+            saveJob(job, saveButton);
+          });
+
+          actions.append(applyButton, saveButton);
+          card.appendChild(actions);
+          list.appendChild(card);
+        });
+      }
+
+      async function loadStudentData() {
+        const { data: authData, error: authError } =
+          await db.auth.getUser();
+
+        if (authError || !authData.user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentUserId = authData.user.id;
+
+        const { data: profileData, error: profileError } = await db
+          .from("profiles")
+          .select("*")
+          .eq("id", currentUserId)
+          .maybeSingle();
+
+        if (profileError) {
+          throw new Error("Could not load your profile: " + profileError.message);
+        }
+
+        if (!profileData) {
+          throw new Error("Your profile is missing. Complete account setup before using job recommendations.");
+        }
+
+        if (profileData.role !== "student") {
+          throw new Error("This page is available to student accounts only.");
+        }
+
+        profile = profileData;
+
+        const { data: jobData, error: jobError } = await db
+          .from("jobs")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(200);
+
+        if (jobError) {
+          throw new Error("Could not load jobs: " + jobError.message);
+        }
+
+        jobs = jobData || [];
+
+        const applicationResult = await db
+          .from("applications")
+          .select("job_id")
+          .eq("student_id", currentUserId);
+
+        if (!applicationResult.error) {
+          appliedJobIds = new Set(
+            (applicationResult.data || []).map(function (item) {
+              return item.job_id;
+            })
+          );
+        } else {
+          console.warn("Application status could not be loaded:", applicationResult.error.message);
+        }
+
+        const savedResult = await db
+          .from("saved_jobs")
+          .select("job_id")
+          .eq("student_id", currentUserId);
+
+        if (!savedResult.error) {
+          savedJobIds = new Set(
+            (savedResult.data || []).map(function (item) {
+              return item.job_id;
+            })
+          );
+        } else {
+          console.warn("Saved jobs could not be loaded:", savedResult.error.message);
+        }
+
+        renderJobs();
+      }
+
+      async function applyToJob(job, button) {
+        if (!currentUserId) return;
+
+        if (appliedJobIds.has(job.id)) {
+          showNotice("You have already applied to this job.");
+          return;
+        }
+
+        const coverLetter = window.prompt(
+          "Write a short cover letter for this application (optional):"
+        );
+
+        if (coverLetter === null) return;
+
+        button.disabled = true;
+        button.textContent = "Submitting...";
+
+        const { error } = await db
+          .from("applications")
+          .insert({
+            job_id: job.id,
+            student_id: currentUserId,
+            cover_letter: coverLetter.trim() || null,
+            status: "pending"
+          });
+
+        if (error) {
+          console.error("Application submission failed:", error);
+          showNotice(
+            error.code === "23505"
+              ? "You have already applied to this job."
+              : "Application failed: " + error.message
+          );
+          button.disabled = false;
+          button.textContent = "Apply Now";
+          return;
+        }
+
+        appliedJobIds.add(job.id);
+        showNotice("Your application was submitted successfully.");
+        renderJobs();
+      }
+
+      async function saveJob(job, button) {
+        if (!currentUserId) return;
+
+        if (savedJobIds.has(job.id)) {
+          showNotice("This job is already in your saved list.");
+          return;
+        }
+
+        button.disabled = true;
+
+        const { error } = await db
+          .from("saved_jobs")
+          .insert({
+            student_id: currentUserId,
+            job_id: job.id
+          });
+
+        if (error) {
+          console.error("Saving job failed:", error);
+          showNotice("Could not save this job: " + error.message);
+          button.disabled = false;
+          return;
+        }
+
+        savedJobIds.add(job.id);
+        button.textContent = "Saved";
+        button.disabled = false;
+        showNotice("Job saved successfully.");
+      }
+
+      async function initialize() {
+        const config = window.SKILL2EARN_SUPABASE_CONFIG;
+
+        if (!config || typeof config.getClient !== "function") {
+          list.replaceChildren(makeElement(
+            "div",
+            "message",
+            "Supabase configuration was not found. Check js/supabase-client.js."
+          ));
+          return;
+        }
+
+        try {
+          db = config.getClient();
+          await loadStudentData();
+        } catch (error) {
+          console.error("Recommended jobs initialization failed:", error);
+          list.replaceChildren(makeElement(
+            "div",
+            "message",
+            error.message || "Unable to load recommended jobs."
+          ));
+        }
+      }
+
+      searchInput.addEventListener("input", renderJobs);
+      sortSelect.addEventListener("change", renderJobs);
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+      } else {
+        initialize();
+      }
+    })();
+  </script>
+</body>
+</html>

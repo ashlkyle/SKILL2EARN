@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | SKILL2EARN</title>
+
+  <style>
+    :root {
+      --navy: #142b59;
+      --blue: #2457c5;
+      --background: #f4f7fc;
+      --border: #e1e8f2;
+      --text: #1e293b;
+      --muted: #6b7890;
+      --green: #177245;
+      --red: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 17px 5%;
+    }
+
+    .brand {
+      color: var(--navy);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    main {
+      width: min(900px, 92%);
+      margin: 35px auto;
+    }
+
+    .page-heading {
+      margin-bottom: 24px;
+    }
+
+    .page-heading h1 {
+      margin: 0 0 9px;
+      font-size: clamp(26px, 4vw, 34px);
+    }
+
+    .page-heading p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 18px rgba(20, 43, 89, .035);
+    }
+
+    .card h2 {
+      margin: 0 0 7px;
+      font-size: 19px;
+    }
+
+    .card-description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #d6dfed;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(36, 87, 197, .1);
+    }
+
+    textarea {
+      min-height: 125px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .help {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .skill-input {
+      display: flex;
+      gap: 8px;
+    }
+
+    .skill-input input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button-primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: #1948a9;
+    }
+
+    .button-secondary {
+      background: #edf2ff;
+      color: var(--blue);
+    }
+
+    .button-remove {
+      background: #fff0ef;
+      color: var(--red);
+      padding: 6px 9px;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .skill-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #edf2ff;
+      color: #214ba2;
+      border-radius: 20px;
+      padding: 7px 9px 7px 12px;
+      font-size: 12px;
+    }
+
+    .skill-chip button {
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #214ba2;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 0 2px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 23px;
+    }
+
+    .message {
+      display: none;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success {
+      display: block;
+      background: #e7f7ed;
+      color: var(--green);
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0ef;
+      color: var(--red);
+    }
+
+    .message.info {
+      display: block;
+      background: #edf2ff;
+      color: var(--navy);
+    }
+
+    .account-email {
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      padding: 30px 15px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        margin: 24px auto;
+      }
+
+      .card {
+        padding: 19px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .skill-input {
+        flex-direction: column;
+      }
+
+      .skill-input .button {
+        width: 100%;
+      }
+    }
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="dashboard.html">SKILL2EARN</a>
+  </header>
+
+  <main>
+    <section class="page-heading">
+      <h1>My Student Profile</h1>
+      <p>
+        Keep your profile updated to help employers understand your
+        background and improve your job recommendations.
+      </p>
+    </section>
+
+    <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+
+    <section class="profile-layout">
+      <article class="card">
+        <h2>Personal Information</h2>
+        <p class="card-description">
+          Provide accurate information so employers can better understand
+          your academic background.
+        </p>
+
+        <p class="account-email">
+          Account email: <strong id="accountEmail">Loading...</strong>
+        </p>
+
+        <form id="profileForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="fullName">Full name</label>
+              <input
+                id="fullName"
+                name="full_name"
+                type="text"
+                maxlength="120"
+                required
+                autocomplete="name"
+                placeholder="Enter your full name"
+              >
+            </div>
+
+            <div class="field">
+              <label for="school">School or university</label>
+              <input
+                id="school"
+                name="school"
+                type="text"
+                maxlength="150"
+                placeholder="Enter your school"
+              >
+            </div>
+
+            <div class="field">
+              <label for="course">Course or program</label>
+              <input
+                id="course"
+                name="course"
+                type="text"
+                maxlength="150"
+                placeholder="e.g. BS Information Technology"
+              >
+            </div>
+
+            <div class="field full">
+              <label for="bio">Professional introduction</label>
+              <textarea
+                id="bio"
+                name="bio"
+                maxlength="1500"
+                placeholder="Introduce yourself, your interests, and the work you want to pursue."
+              ></textarea>
+              <div class="help">
+                Maximum 1,500 characters. Avoid including sensitive personal information.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              class="button button-primary"
+              type="submit"
+              id="saveProfileButton"
+            >
+              Save Profile
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Skills and Job Preferences</h2>
+        <p class="card-description">
+          Add skills you can demonstrate. These are used by the
+          SKILL2EARN job-matching engine.
+        </p>
+
+        <div class="field">
+          <label for="skillInput">Your skills</label>
+
+          <div class="skill-input">
+            <input
+              id="skillInput"
+              type="text"
+              maxlength="60"
+              placeholder="e.g. HTML, graphic design, writing"
+            >
+
+            <button
+              class="button button-secondary"
+              type="button"
+              id="addSkillButton"
+            >
+              Add Skill
+            </button>
+          </div>
+
+          <div class="help">
+            Add skills individually. Remove any skill you no longer want to list.
+          </div>
+
+          <div id="skillsList" class="skills-list"></div>
+        </div>
+
+        <div class="form-grid" style="margin-top: 24px;">
+          <div class="field">
+            <label for="workArrangement">Preferred work arrangement</label>
+
+            <select id="workArrangement">
+              <option value="">No preference</option>
+              <option value="remote">Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="onsite">On-site</option>
+              <option value="flexible">Flexible</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="preferredCategory">Preferred job category</label>
+
+            <select id="preferredCategory">
+              <option value="">No preference</option>
+              <option value="technology">Technology and IT</option>
+              <option value="design">Design and Creative</option>
+              <option value="writing">Writing and Content</option>
+              <option value="marketing">Marketing and Social Media</option>
+              <option value="education">Tutoring and Education</option>
+              <option value="administration">Administrative Support</option>
+              <option value="research">Research and Data</option>
+              <option value="customer-service">Customer Service</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            class="button button-primary"
+            type="button"
+            id="savePreferencesButton"
+          >
+            Save Skills & Preferences
+          </button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    SKILL2EARN · Student Profile
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const messageBox = document.getElementById("pageMessage");
+      const profileForm = document.getElementById("profileForm");
+      const saveProfileButton = document.getElementById("saveProfileButton");
+      const savePreferencesButton = document.getElementById("savePreferencesButton");
+      const skillInput = document.getElementById("skillInput");
+      const skillsList = document.getElementById("skillsList");
+      const addSkillButton = document.getElementById("addSkillButton");
+
+      let db = null;
+      let userId = null;
+      let skills = [];
+      let profileColumns = new Set();
+
+      function showMessage(message, type) {
+        messageBox.textContent = message;
+        messageBox.className = "message " + type;
+      }
+
+      function clearMessage() {
+        messageBox.textContent = "";
+        messageBox.className = "message";
+      }
+
+      function normalizeSkill(value) {
+        return String(value || "")
+          .trim()
+          .replace(/\s+/g, " ")
+          .slice(0, 60);
+      }
+
+      function renderSkills() {
+        skillsList.replaceChildren();
+
+        if (skills.length === 0) {
+          const empty = document.createElement("span");
+          empty.className = "help";
+          empty.textContent = "No skills added yet.";
+          skillsList.appendChild(empty);
+          return;
+        }
+
+        skills.forEach(function (skill, index) {
+          const chip = document.createElement("span");
+          chip.className = "skill-chip";
+
+          const label = document.createElement("span");
+          label.textContent = skill;
+
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", "Remove " + skill);
+
+          remove.addEventListener("click", function () {
+            skills.splice(index, 1);
+            renderSkills();
+          });
+
+          chip.append(label, remove);
+          skillsList.appendChild(chip);
+        });
+      }
+
+      function addSkill() {
+        const skill = normalizeSkill(skillInput.value);
+
+        if (!skill) {
+          showMessage("Enter a skill before adding it.", "error");
+          return;
+        }
+
+        const exists = skills.some(function (item) {
+          return item.toLowerCase() === skill.toLowerCase();
+        });
+
+        if (exists) {
+          showMessage("That skill is already in your profile.", "info");
+          return;
+        }
+
+        if (skills.length >= 30) {
+          showMessage("You can add up to 30 skills.", "error");
+          return;
+        }
+
+        skills.push(skill);
+        skillInput.value = "";
+        renderSkills();
+        clearMessage();
+      }
+
+      function setProfileValue(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.value = value || "";
+      }
+
+      async function initialize() {
+        const config = window.SKILL2EARN_SUPABASE_CONFIG;
+
+        if (!config || typeof config.getClient !== "function") {
+          showMessage(
+            "Supabase configuration is missing. Check js/supabase-client.js.",
+            "error"
+          );
+          profileForm.querySelectorAll("input, textarea, button").forEach(function (element) {
+            element.disabled = true;
+          });
+          savePreferencesButton.disabled = true;
+          addSkillButton.disabled = true;
+          return;
+        }
+
+        try {
+          db = config.getClient();
+
+          const { data: authData, error: authError } =
+            await db.auth.getUser();
+
+          if (authError || !authData.user) {
+            window.location.replace("login.html");
+            return;
+          }
+
+          userId = authData.user.id;
+          document.getElementById("accountEmail").textContent =
+            authData.user.email || "Email unavailable";
+
+          const { data: profile, error: profileError } = await db
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .maybeSingle();
+
+          if (profileError) {
+            throw new Error("Unable to load your profile: " + profileError.message);
+          }
+
+          if (!profile) {
+            throw new Error(
+              "Your profile record does not exist yet. Complete account registration or contact the administrator."
+            );
+          }
+
+          if (profile.role !== "student") {
+            showMessage("This page is available to student accounts only.", "error");
+            profileForm.querySelectorAll("input, textarea, button").forEach(function (element) {
+              element.disabled = true;
+            });
+            savePreferencesButton.disabled = true;
+            addSkillButton.disabled = true;
+            return;
+          }
+
+          profileColumns = new Set(Object.keys(profile));
+
+          setProfileValue("fullName", profile.full_name);
+          setProfileValue("school", profile.school);
+          setProfileValue("course", profile.course);
+          setProfileValue("bio", profile.bio);
+          setProfileValue("workArrangement", profile.preferred_work_arrangement);
+          setProfileValue("preferredCategory", profile.preferred_category);
+
+          if (Array.isArray(profile.skills)) {
+            skills = profile.skills.slice(0, 30);
+          } else if (typeof profile.skills === "string") {
+            skills = profile.skills
+              .split(/[,;\n]/)
+              .map(normalizeSkill)
+              .filter(Boolean)
+              .slice(0, 30);
+          }
+
+          renderSkills();
+
+          const requiredColumns = [
+            "full_name", "school", "course", "bio",
+            "skills", "preferred_work_arrangement", "preferred_category"
+          ];
+
+          const missingColumns = requiredColumns.filter(function (column) {
+            return !profileColumns.has(column);
+          });
+
+          if (missingColumns.length) {
+            showMessage(
+              "Your profile loaded, but these database fields are missing: " +
+              missingColumns.join(", ") +
+              ". Run the profile-fields SQL from the setup instructions before saving those fields.",
+              "info"
+            );
+          }
+        } catch (error) {
+          console.error("Student profile initialization failed:", error);
+          showMessage(error.message || "Unable to load your profile.", "error");
+        }
+      }
+
+      async function saveFields(fields, button, successMessage) {
+        clearMessage();
+
+        if (!db || !userId) {
+          showMessage("You must be signed in to save your profile.", "error");
+          return;
+        }
+
+        const missing = Object.keys(fields).filter(function (key) {
+          return !profileColumns.has(key);
+        });
+
+        if (missing.length) {
+          showMessage(
+            "Cannot save because these database fields are missing: " +
+            missing.join(", ") +
+            ". Add them to the profiles table first.",
+            "error"
+          );
+          return;
+        }
+
+        const previousText = button.textContent;
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+        try {
+          const { data, error } = await db
+            .from("profiles")
+            .update(fields)
+            .eq("id", userId)
+            .select("id")
+            .maybeSingle();
+
+          if (error) {
+            throw new Error(error.message);
+          }
+
+          if (!data) {
+            throw new Error(
+              "No profile was updated. Check your profiles Row Level Security update policy."
+            );
+          }
+
+          showMessage(successMessage, "success");
+        } catch (error) {
+          console.error("Profile save failed:", error);
+          showMessage("Could not save changes: " + error.message, "error");
+        } finally {
+          button.disabled = false;
+          button.textContent = previousText;
+        }
+      }
+
+      profileForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        await saveFields(
+          {
+            full_name: document.getElementById("fullName").value.trim(),
+            school: document.getElementById("school").value.trim(),
+            course: document.getElementById("course").value.trim(),
+            bio: document.getElementById("bio").value.trim()
+          },
+          saveProfileButton,
+          "Your personal profile has been saved."
+        );
+      });
+
+      savePreferencesButton.addEventListener("click", async function () {
+        await saveFields(
+          {
+            skills: skills,
+            preferred_work_arrangement: document.getElementById("workArrangement").value || null,
+            preferred_category: document.getElementById("preferredCategory").value || null
+          },
+          savePreferencesButton,
+          "Your skills and job preferences have been saved."
+        );
+      });
+
+      addSkillButton.addEventListener("click", addSkill);
+
+      skillInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addSkill();
+        }
+      });
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+      } else {
+        initialize();
+      }
+    })();
+  </script>
+</body>
+</html>

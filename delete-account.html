@@ -1,0 +1,167 @@
+<!-- Save as: student/delete-account.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Deletion Request | SKILL2EARN</title>
+  <style>
+    :root{--navy:#102a56;--blue:#2563eb;--text:#172033;--muted:#64748b;--border:#e2e8f0;--bg:#f5f8fc;--red:#b91c1c;--green:#166534}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+    header{background:var(--navy);color:white;padding:18px 6%;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .brand{font-size:21px;font-weight:800}.brand span{color:#93c5fd}nav{display:flex;gap:16px;flex-wrap:wrap}nav a{color:white;text-decoration:none;font-size:14px}
+    main{max-width:760px;margin:38px auto;padding:0 18px 40px}.back{color:var(--blue);text-decoration:none;font-weight:700;font-size:14px}
+    .heading{margin:22px 0}.heading h1{font-size:29px;color:var(--navy);margin:0 0 8px}.heading p{color:var(--muted);line-height:1.6;margin:0}
+    .card{background:white;border:1px solid var(--border);border-radius:18px;padding:26px;box-shadow:0 8px 28px #0f172a0a}
+    .warning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:15px;line-height:1.6;font-size:14px}
+    label{display:block;font-weight:700;margin:20px 0 8px;font-size:14px}textarea{width:100%;min-height:125px;resize:vertical;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit}
+    .confirm{display:flex;align-items:flex-start;gap:10px;margin-top:20px;font-size:14px;line-height:1.5}.confirm input{margin-top:3px}
+    button{width:100%;padding:13px;margin-top:20px;border:0;border-radius:10px;background:#b91c1c;color:white;font-size:15px;font-weight:700;cursor:pointer}button:disabled{opacity:.65;cursor:wait}
+    .message{display:none;margin-top:15px;padding:12px;border-radius:10px;line-height:1.5;font-size:14px}.message.error{display:block;background:#fef2f2;color:var(--red)}.message.success{display:block;background:#f0fdf4;color:var(--green)}
+    @media(max-width:600px){header{padding:16px 5%}.card{padding:20px}.heading h1{font-size:25px}}
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="brand">SKILL<span>2</span>EARN</div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="support.html">Support</a>
+      <a href="#" data-auth="logout">Log Out</a>
+    </nav>
+  </header>
+
+  <main>
+    <a class="back" href="dashboard.html">← Back to dashboard</a>
+    <div class="heading">
+      <h1>Request Account Deletion</h1>
+      <p>You can request the SKILL2EARN team to review the deletion of your account.</p>
+    </div>
+
+    <section class="card">
+      <div class="warning">
+        <strong>Important:</strong> Submitting this form does not immediately delete your account. Your request will be sent for administrative review. You can be contacted if clarification is needed. Do not submit passwords or authentication codes.
+      </div>
+
+      <form id="deletionForm">
+        <label for="reason">Reason for your request (optional)</label>
+        <textarea id="reason" maxlength="2000" placeholder="Tell us why you would like to delete your account, if you wish."></textarea>
+
+        <label class="confirm">
+          <input id="confirmRequest" type="checkbox" required>
+          <span>I understand this submits a deletion request for review and does not immediately delete my account.</span>
+        </label>
+
+        <button id="submitButton" type="submit">Submit Deletion Request</button>
+        <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script>
+    (() => {
+      const form = document.getElementById("deletionForm");
+      const button = document.getElementById("submitButton");
+      const notice = document.getElementById("formMessage");
+
+      function showMessage(text, type) {
+        notice.textContent = text;
+        notice.className = "message " + type;
+      }
+
+      async function start() {
+        try {
+          const client = window.SKILL2EARN_SUPABASE_CONFIG.getClient();
+          const { data: { user }, error } = await client.auth.getUser();
+          if (error || !user) {
+            location.replace("login.html");
+            return;
+          }
+
+          const { data: profile, error: profileError } = await client
+            .from("profiles").select("role").eq("id", user.id).maybeSingle();
+
+          if (profileError) throw profileError;
+          if (!profile || profile.role !== "student") {
+            document.querySelector("main").innerHTML =
+              '<section class="card"><h1>Access denied</h1><p>This page is for student accounts only.</p><a href="../index.html">Return to home</a></section>';
+            return;
+          }
+
+          const { data: existing, error: lookupError } = await client
+            .from("account_deletion_requests")
+            .select("id,status,created_at")
+            .eq("user_id", user.id)
+            .eq("status", "pending")
+            .limit(1);
+
+          if (lookupError && lookupError.code !== "PGRST116") throw lookupError;
+
+          if (existing && existing.length) {
+            showMessage("You already have a pending deletion request. Please wait for the team to review it.", "success");
+            button.disabled = true;
+            button.textContent = "Request Already Pending";
+          }
+
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (button.disabled) return;
+            if (!document.getElementById("confirmRequest").checked) {
+              showMessage("Please confirm that you understand this is a request for review.", "error");
+              return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Submitting...";
+            notice.className = "message";
+
+            try {
+              const { data: pending, error: pendingError } = await client
+                .from("account_deletion_requests").select("id")
+                .eq("user_id", user.id).eq("status", "pending").limit(1);
+
+              if (pendingError) throw pendingError;
+              if (pending && pending.length) {
+                showMessage("You already have a pending request. Please wait for review.", "success");
+                button.textContent = "Request Already Pending";
+                return;
+              }
+
+              const { error: insertError } = await client
+                .from("account_deletion_requests")
+                .insert({
+                  user_id: user.id,
+                  role: "student",
+                  reason: document.getElementById("reason").value.trim() || null,
+                  status: "pending"
+                });
+
+              if (insertError) throw insertError;
+
+              form.reset();
+              showMessage("Your deletion request was submitted. Your account remains active until the request is reviewed and processed.", "success");
+              button.textContent = "Request Submitted";
+            } catch (err) {
+              console.error(err);
+              showMessage("Could not submit your request. Check the account_deletion_requests table and its permissions. Details: " + (err.message || "Unknown error"), "error");
+              button.disabled = false;
+              button.textContent = "Submit Deletion Request";
+            }
+          });
+        } catch (err) {
+          console.error(err);
+          showMessage("Could not load your account. Check the Supabase configuration and profiles table. " + (err.message || ""), "error");
+        }
+      }
+
+      start();
+    })();
+  </script>
+</body>
+</html>

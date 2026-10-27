@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help & Reports | SKILL2EARN Admin</title>
+  <link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body data-admin-page="reports">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="dashboard.html"><div class="brand-mark">S2</div><div><strong>SKILL2EARN</strong><small>Admin Console</small></div></a>
+      <div><div class="admin-nav-label">Workspace</div><nav class="admin-nav">
+        <a href="dashboard.html"><span class="nav-symbol">◈</span> Overview</a>
+        <a href="verifications.html"><span class="nav-symbol">✓</span> Verifications</a>
+        <a href="jobs.html"><span class="nav-symbol">▤</span> Job listings</a>
+        <a class="active" href="reports.html"><span class="nav-symbol">⚑</span> Help & Reports</a>
+        <a href="settings.html"><span class="nav-symbol">⚙</span> Settings</a>
+      </nav></div>
+      <div class="sidebar-bottom">Administrator<small>Frontend demo environment</small></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar"><div><h1>Help & Reports</h1><p>Review user reports, support requests, and reported issues.</p></div><div class="admin-user"><div class="admin-avatar">AD</div><span>Platform Administrator</span></div></header>
+      <div class="admin-content">
+        <div class="admin-alert">The listed reports are fictional examples. Marking a report resolved only changes the demo status; it does not contact a user.</div>
+        <section class="admin-panel">
+          <div class="admin-section-head"><div><h2>Report inbox</h2><p>Use the status filter to focus on items needing attention.</p></div></div>
+          <div class="admin-toolbar">
+            <div class="admin-search"><input class="admin-input" id="reportSearch" type="search" placeholder="Search report, subject, reporter, or ID"></div>
+            <div class="admin-filter"><select class="admin-select" id="reportStatus"><option>All</option><option>Open</option><option>In Review</option><option>Resolved</option></select></div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Report ID</th><th>Type</th><th>Subject / Reporter</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="reportRows"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="admin-columns">
+          <article class="admin-panel">
+            <h2>Suggested support workflow</h2>
+            <p>A consistent process for the future production system.</p>
+            <div class="admin-check-row"><div><strong>1. Review the report</strong><p>Read the description and identify the affected account or listing.</p></div></div>
+            <div class="admin-check-row"><div><strong>2. Investigate securely</strong><p>Check relevant records while limiting access to sensitive information.</p></div></div>
+            <div class="admin-check-row"><div><strong>3. Resolve and document</strong><p>Record the outcome and notify the reporter when appropriate.</p></div></div>
+          </article>
+          <article class="admin-panel">
+            <h2>Support contact</h2>
+            <p>Support contact details for this prototype.</p>
+            <div class="admin-alert">Support number: <strong>Demo number only</strong><br>Use the number already configured in your student and employer support pages when you consolidate the real support details.</div>
+            <p class="admin-notice" style="margin-top:15px">Do not publish a placeholder number as a real customer support contact.</p>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

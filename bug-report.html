@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report a Bug | SKILL2EARN</title>
+  <style>
+    :root{--navy:#102a56;--blue:#2563eb;--bg:#f4f7fc;--border:#dce5f1;--muted:#64748b;--text:#1f2937}
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+    .container{max-width:720px;margin:auto}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+    .brand{color:var(--navy);font-size:19px;font-weight:800}
+    a{color:var(--blue);text-decoration:none;font-size:13px}
+    .card{padding:30px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 35px #102a560d}
+    .tag{display:inline-block;padding:7px 11px;border-radius:999px;background:#eaf1ff;color:var(--blue);font-size:12px;font-weight:700}
+    h1{margin:15px 0 10px;color:var(--navy);font-size:28px}
+    .intro{color:var(--muted);font-size:14px;line-height:1.7}
+    label{display:block;margin:19px 0 7px;font-size:13px;font-weight:700}
+    input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font:inherit;background:white}
+    textarea{min-height:130px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1a}
+    .hint{margin-top:7px;font-size:12px;color:var(--muted);line-height:1.6}
+    button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:10px;background:var(--blue);color:white;font-size:14px;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}
+    .message{display:none;margin-top:16px;padding:13px;border-radius:9px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+    .message.error{display:block;background:#fef2f2;color:#991b1b}
+    .message.success{display:block;background:#f0fdf4;color:#166534}
+    @media(max-width:560px){body{padding:12px}.card{padding:21px}h1{font-size:24px}}
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body>
+<main class="container">
+  <div class="top">
+    <div class="brand">SKILL2EARN</div>
+    <a href="dashboard.html">← Student Dashboard</a>
+  </div>
+  <section class="card">
+    <span class="tag">STUDENT SUPPORT</span>
+    <h1>Report a technical issue</h1>
+    <p class="intro">Tell us what went wrong so the SKILL2EARN team can investigate. Do not include passwords, authentication codes, or unnecessary personal information.</p>
+
+    <form id="bugForm">
+      <label for="title">Issue title</label>
+      <input id="title" maxlength="150" required placeholder="Briefly describe the issue">
+
+      <label for="category">Issue category</label>
+      <select id="category" required>
+        <option value="">Select a category</option>
+        <option value="login">Login or registration</option>
+        <option value="profile">Profile or verification</option>
+        <option value="jobs">Job listings or applications</option>
+        <option value="messaging">Communication</option>
+        <option value="display">Display or navigation</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="severity">Severity</label>
+      <select id="severity" required>
+        <option value="low">Low — minor inconvenience</option>
+        <option value="medium" selected>Medium — feature partly affected</option>
+        <option value="high">High — important feature unavailable</option>
+      </select>
+
+      <label for="description">What happened?</label>
+      <textarea id="description" maxlength="5000" required placeholder="Include the steps that caused the problem and what you expected to happen."></textarea>
+
+      <label for="steps">Steps to reproduce (optional)</label>
+      <textarea id="steps" maxlength="3000" placeholder="1. Open…&#10;2. Click…&#10;3. The issue appears…"></textarea>
+
+      <button id="submitButton" type="submit">Submit Bug Report</button>
+    </form>
+    <div id="message" class="message" role="status"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/navigation.js"></script>
+<script>
+(function(){
+  "use strict";
+  const form=document.getElementById("bugForm");
+  const button=document.getElementById("submitButton");
+  const message=document.getElementById("message");
+  let db,user;
+
+  function notify(text,type){
+    message.textContent=text;
+    message.className="message "+type;
+  }
+
+  async function init(){
+    try{
+      if(!window.SKILL2EARN_SUPABASE_CONFIG||!window.SKILL2EARN_SUPABASE_CONFIG.isConfigured()){
+        notify("Supabase is not configured. Check js/supabase-client.js.","error");
+        button.disabled=true;
+        return;
+      }
+      db=window.SKILL2EARN_SUPABASE_CONFIG.getClient();
+      const session=await db.auth.getSession();
+      user=session.data?.session?.user;
+      if(!user){window.location.replace("login.html");return;}
+
+      const profile=await db.from("profiles").select("role").eq("id",user.id).maybeSingle();
+      if(profile.error)throw profile.error;
+      if(profile.data?.role!=="student"){
+        notify("This page is available only to student accounts.","error");
+        button.disabled=true;
+      }
+    }catch(e){notify("Unable to initialize the form: "+(e.message||"Unknown error"),"error");}
+  }
+
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    if(!db||!user){notify("Please sign in again before submitting.","error");return;}
+    button.disabled=true;
+    button.textContent="Submitting…";
+    message.className="message";
+
+    const payload={
+      user_id:user.id,
+      title:document.getElementById("title").value.trim(),
+      category:document.getElementById("category").value,
+      severity:document.getElementById("severity").value,
+      description:document.getElementById("description").value.trim(),
+      steps_to_reproduce:document.getElementById("steps").value.trim()||null,
+      status:"open"
+    };
+
+    try{
+      const result=await db.from("bug_reports").insert(payload);
+      if(result.error)throw result.error;
+      notify("Bug report submitted successfully. Thank you for helping improve SKILL2EARN.","success");
+      form.reset();
+      document.getElementById("severity").value="medium";
+    }catch(err){
+      notify("Could not submit the report: "+err.message+". The bug_reports table or its access policy may need to be configured.","error");
+    }finally{
+      button.disabled=false;
+      button.textContent="Submit Bug Report";
+    }
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

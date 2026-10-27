@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f1826">
+  <title>Student Registration | SKILL2EARN</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="../js/supabase-client.js" defer></script>
+  <script src="../js/auth.js" defer></script>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body class="auth-page">
+  <main class="auth-layout">
+    <aside class="auth-side">
+      <a class="brand auth-brand" href="../index.html">
+        <span class="brand-icon">S</span>
+        <span>SKILL<span class="brand-accent">2</span>EARN</span>
+      </a>
+
+      <div class="auth-promo">
+        <span class="auth-eyebrow">
+          <span class="status-dot"></span>
+          YOUR SKILLS HAVE POTENTIAL
+        </span>
+        <h1>Start small.<br><span class="gradient-text">Dream bigger.</span></h1>
+        <p>Create your student profile and take your first step toward flexible work, practical experience, and new opportunities.</p>
+
+        <div class="auth-benefits">
+          <div class="auth-benefit">
+            <span class="auth-benefit-icon">✓</span>
+            A profile to showcase your abilities
+          </div>
+          <div class="auth-benefit">
+            <span class="auth-benefit-icon">✦</span>
+            A built-in resume for your experience
+          </div>
+          <div class="auth-benefit">
+            <span class="auth-benefit-icon">↗</span>
+            Job opportunities suited to your skills
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-side-footer">
+        SKILL2EARN · Empowering student potential
+      </div>
+    </aside>
+
+    <section class="auth-main">
+      <div class="auth-card">
+        <a class="brand auth-mobile-brand" href="../index.html">
+          <span class="brand-icon">S</span>
+          <span>SKILL<span class="brand-accent">2</span>EARN</span>
+        </a>
+
+        <div class="auth-heading">
+          <h2>Create your account</h2>
+          <p>Join SKILL2EARN with your student email.</p>
+        </div>
+
+        <div class="auth-message" data-auth-message role="status" aria-live="polite"></div>
+<div class="auth-divider" style="margin: 21px 0;">or register with email</div>
+
+        <form class="auth-form" data-auth="register" data-role="student">
+          <div class="auth-field">
+            <label for="fullName">Full name</label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              placeholder="Enter your full name"
+              autocomplete="name"
+              minlength="2"
+              maxlength="100"
+              required
+            >
+          </div>
+
+          <div class="auth-field">
+            <label for="email">Student email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@school.edu.ph"
+              autocomplete="email"
+              required
+            >
+            <span class="auth-hint">Use your school email. It must end in @tip.edu.ph or @edu.ph.</span>
+          </div>
+
+          <div class="auth-field">
+            <label for="school">School / Institution</label>
+            <input
+              id="school"
+              name="school"
+              type="text"
+              placeholder="Enter your school name"
+              maxlength="150"
+              required
+            >
+          </div>
+
+          <div class="auth-field">
+            <label for="course">Course / Program</label>
+            <input
+              id="course"
+              name="course"
+              type="text"
+              placeholder="e.g. BS Information Technology"
+              maxlength="150"
+              required
+            >
+          </div>
+
+          <div class="auth-field">
+            <label for="password">Create password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="At least 8 characters"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <div class="auth-field">
+            <label for="confirmPassword">Confirm password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="Enter your password again"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <label class="auth-checkbox">
+            <input type="checkbox" name="terms" required>
+            <span>I agree to the platform's terms and understand that student verification is required before my account can receive a verified badge.</span>
+          </label>
+
+          <button class="auth-submit" type="submit">Create student account →</button>
+        </form>
+
+        <div class="auth-bottom">
+          Already registered?
+          <a class="auth-link" href="login.html">Log in</a>
+        </div>
+
+        <div class="auth-security-note">
+          Frontend demo only. Do not use a real password here.
+          <br><a class="auth-link" href="../index.html">← Back to home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

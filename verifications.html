@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifications | SKILL2EARN Admin</title>
+  <link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body data-admin-page="verifications">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="dashboard.html"><div class="brand-mark">S2</div><div><strong>SKILL2EARN</strong><small>Admin Console</small></div></a>
+      <div><div class="admin-nav-label">Workspace</div><nav class="admin-nav">
+        <a href="dashboard.html"><span class="nav-symbol">◈</span> Overview</a>
+        <a class="active" href="verifications.html"><span class="nav-symbol">✓</span> Verifications</a>
+        <a href="jobs.html"><span class="nav-symbol">▤</span> Job listings</a>
+        <a href="reports.html"><span class="nav-symbol">⚑</span> Help & Reports</a>
+        <a href="settings.html"><span class="nav-symbol">⚙</span> Settings</a>
+      </nav></div>
+      <div class="sidebar-bottom">Administrator<small>Frontend demo environment</small></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar"><div><h1>Verifications</h1><p>Review student, employer, and individual client demo requests.</p></div><div class="admin-user"><div class="admin-avatar">AD</div><span>Platform Administrator</span></div></header>
+      <div class="admin-content">
+        <div class="admin-alert">Reviewing these sample requests does not validate a real ID or change a real account's verification status.</div>
+        <section class="admin-panel">
+          <div class="admin-section-head"><div><h2>Verification queue</h2><p>Search requests and filter by role or review status.</p></div></div>
+          <div class="admin-toolbar">
+            <div class="admin-search"><input class="admin-input" id="verificationSearch" type="search" placeholder="Search name, email, or request ID"></div>
+            <div class="admin-filter"><select class="admin-select" id="verificationRole"><option>All</option><option>Student</option><option>Employer</option><option>Individual Client</option></select></div>
+            <div class="admin-filter"><select class="admin-select" id="verificationStatus"><option>All</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>Request ID</th><th>Applicant</th><th>Role</th><th>Document type</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="verificationRows"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="admin-panel">
+          <h2>Verification review checklist</h2>
+          <p>Use this checklist as a guide when real verification is implemented.</p>
+          <div class="admin-check-row"><div><strong>Confirm account details</strong><p>Check that the submitted name matches the account.</p></div><span class="admin-badge badge-open">Step 1</span></div>
+          <div class="admin-check-row"><div><strong>Review the submitted document</strong><p>Verify the file securely and follow the approved identity-review process.</p></div><span class="admin-badge badge-open">Step 2</span></div>
+          <div class="admin-check-row"><div><strong>Record a decision and reason</strong><p>Store the result securely and notify the applicant through the backend.</p></div><span class="admin-badge badge-open">Step 3</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

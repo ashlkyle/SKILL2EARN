@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Support | SKILL2EARN</title>
+  <style>
+    :root{--navy:#102a56;--blue:#2563eb;--bg:#f4f7fc;--border:#dce5f1;--muted:#64748b;--text:#1f2937}
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+    .container{max-width:720px;margin:auto}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+    .brand{color:var(--navy);font-size:19px;font-weight:800}
+    a{color:var(--blue);text-decoration:none;font-size:13px}
+    .card{padding:30px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 35px #102a560d}
+    .tag{display:inline-block;padding:7px 11px;border-radius:999px;background:#eaf1ff;color:var(--blue);font-size:12px;font-weight:700}
+    h1{margin:15px 0 10px;color:var(--navy);font-size:28px}
+    .intro{color:var(--muted);font-size:14px;line-height:1.7}
+    label{display:block;margin:19px 0 7px;font-size:13px;font-weight:700}
+    input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:10px;font:inherit;background:white}
+    textarea{min-height:150px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1a}
+    .hint{margin-top:7px;font-size:12px;color:var(--muted);line-height:1.6}
+    .privacy{margin-top:20px;padding:14px;border-radius:10px;background:#f0f7ff;color:#1e40af;font-size:12px;line-height:1.7}
+    button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:10px;background:var(--blue);color:white;font-size:14px;font-weight:700;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}
+    .message{display:none;margin-top:16px;padding:13px;border-radius:9px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+    .message.error{display:block;background:#fef2f2;color:#991b1b}
+    .message.success{display:block;background:#f0fdf4;color:#166534}
+    @media(max-width:560px){body{padding:12px}.card{padding:21px}h1{font-size:24px}}
+  </style>
+<link rel="stylesheet" href="../css/theme.css">
+<script src="../js/validation.js" defer></script>
+</head>
+<body>
+<main class="container">
+  <div class="top">
+    <div class="brand">SKILL2EARN</div>
+    <a href="dashboard.html">← Student Dashboard</a>
+  </div>
+  <section class="card">
+    <span class="tag">STUDENT SUPPORT</span>
+    <h1>How can we help?</h1>
+    <p class="intro">Send the support team a question or concern. Provide enough detail for us to understand the issue, but avoid including passwords, authentication codes, or unnecessary sensitive information.</p>
+
+    <form id="supportForm">
+      <label for="category">What do you need help with?</label>
+      <select id="category" required>
+        <option value="">Select a topic</option>
+        <option value="account">Account or login</option>
+        <option value="verification">Student verification</option>
+        <option value="jobs">Finding or applying for jobs</option>
+        <option value="employer">Employer or job listing concern</option>
+        <option value="safety">Safety or suspicious activity</option>
+        <option value="other">Other concern</option>
+      </select>
+
+      <label for="subject">Subject</label>
+      <input id="subject" maxlength="150" required placeholder="Summarize your concern">
+
+      <label for="messageText">Message</label>
+      <textarea id="messageText" maxlength="5000" required placeholder="Explain your question or concern. Include relevant details and any steps you have already tried."></textarea>
+
+      <div class="privacy">
+        <strong>Privacy reminder:</strong> Only submit information needed to resolve your concern. Do not share your password or one-time verification codes with anyone.
+      </div>
+
+      <button id="submitButton" type="submit">Send Support Request</button>
+    </form>
+    <div id="message" class="message" role="status"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/navigation.js"></script>
+<script>
+(function(){
+  "use strict";
+  const form=document.getElementById("supportForm");
+  const button=document.getElementById("submitButton");
+  const feedback=document.getElementById("message");
+  let db,user;
+
+  function notify(text,type){
+    feedback.textContent=text;
+    feedback.className="message "+type;
+  }
+
+  async function init(){
+    try{
+      if(!window.SKILL2EARN_SUPABASE_CONFIG||!window.SKILL2EARN_SUPABASE_CONFIG.isConfigured()){
+        notify("Supabase is not configured. Check js/supabase-client.js.","error");
+        button.disabled=true;
+        return;
+      }
+      db=window.SKILL2EARN_SUPABASE_CONFIG.getClient();
+      const session=await db.auth.getSession();
+      user=session.data?.session?.user;
+      if(!user){window.location.replace("login.html");return;}
+
+      const profile=await db.from("profiles").select("role").eq("id",user.id).maybeSingle();
+      if(profile.error)throw profile.error;
+      if(profile.data?.role!=="student"){
+        notify("This page is available only to student accounts.","error");
+        button.disabled=true;
+      }
+    }catch(e){notify("Unable to initialize the support form: "+(e.message||"Unknown error"),"error");}
+  }
+
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    if(!db||!user){notify("Please sign in again before submitting.","error");return;}
+    button.disabled=true;
+    button.textContent="Sending…";
+    feedback.className="message";
+
+    const payload={
+      user_id:user.id,
+      category:document.getElementById("category").value,
+      subject:document.getElementById("subject").value.trim(),
+      message:document.getElementById("messageText").value.trim(),
+      status:"open"
+    };
+
+    try{
+      const result=await db.from("support_tickets").insert(payload);
+      if(result.error)throw result.error;
+      notify("Your support request has been sent successfully.","success");
+      form.reset();
+    }catch(err){
+      notify("Could not send your request: "+err.message+". The support_tickets table or its access policy may need to be configured.","error");
+    }finally{
+      button.disabled=false;
+      button.textContent="Send Support Request";
+    }
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
