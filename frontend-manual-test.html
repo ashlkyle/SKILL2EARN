@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Test Checklist | SKILL2EARN</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: #0e1b2e;
+      --border: #223751;
+      --text: #edf4ff;
+      --muted: #96abc5;
+      --blue: #3b82f6;
+      --green: #34d399;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #122847, var(--bg) 60%);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+    }
+    a { color: #8ec5ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { font: inherit; cursor: pointer; }
+    .shell { width: min(920px, calc(100% - 30px)); margin: auto; padding-bottom: 40px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .brand { font-weight: 800; letter-spacing: .3px; }
+    .brand small { display: block; color: var(--muted); font-weight: 400; font-size: 11px; }
+    .tag { color: #a7d8ff; border: 1px solid #29496c; border-radius: 8px; padding: 7px 10px; font-size: 10px; font-weight: 800; }
+    h1 { font-size: clamp(27px, 4vw, 38px); letter-spacing: -.8px; margin: 30px 0 8px; }
+    h2 { font-size: 17px; margin: 0 0 8px; }
+    p { color: var(--muted); font-size: 13px; }
+    .notice { background: #102642; border: 1px solid #29496c; padding: 14px; border-radius: 11px; color: #c5e4ff; font-size: 12px; margin: 18px 0; }
+    .progress-panel, .test-section { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: 16px; }
+    .progress-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .progress-top strong { font-size: 23px; }
+    .track { height: 5px; background: #1b2d43; border-radius: 99px; overflow: hidden; margin: 13px 0; }
+    .track div { height: 100%; width: 0; background: linear-gradient(90deg, #3b82f6, #38bdf8); transition: width .2s; }
+    .test-section h2 { margin-bottom: 4px; }
+    .test-section > p { margin-top: 0; }
+    .test-item { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid #1b2d43; font-size: 13px; }
+    .test-item:last-child { border-bottom: 0; }
+    .test-item input { margin-top: 4px; accent-color: var(--blue); width: 16px; height: 16px; }
+    .test-item a { display: inline-block; font-size: 11px; margin-top: 4px; }
+    .button-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .btn { border: 1px solid var(--border); background: #172b43; color: var(--text); border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 700; }
+    .btn.primary { background: var(--blue); border-color: var(--blue); color: white; }
+    .btn.success { background: #123a32; border-color: #236e5a; color: #8af0cf; }
+    textarea { width: 100%; min-height: 100px; resize: vertical; padding: 12px; border-radius: 9px; border: 1px solid var(--border); background: #091727; color: var(--text); font: inherit; font-size: 12px; }
+    .muted { color: var(--muted); font-size: 11px; }
+    footer { text-align: center; padding-top: 25px; color: #7288a5; font-size: 11px; }
+    @media (max-width: 500px) { header { align-items: flex-start; } .progress-panel, .test-section { padding: 15px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">SKILL2EARN<small>Manual integration tests</small></div>
+      <span class="tag">STEP 7</span>
+    </header>
+
+    <h1>Test the complete frontend</h1>
+    <p>Open each section, test the listed behavior in the actual page, and tick an item only after you have verified it.</p>
+
+    <div class="notice">
+      <strong>Testing rule:</strong> These checkboxes record your test progress only. They do not run automated tests or verify that a feature works. Authentication, identity verification, and admin actions are still frontend demos.
+    </div>
+
+    <section class="progress-panel">
+      <div class="progress-top">
+        <div><span class="muted">Completed manual checks</span><br><strong id="count">0 / 18</strong></div>
+        <span id="percent">0%</span>
+      </div>
+      <div class="track"><div id="bar"></div></div>
+      <p id="progressMessage">Start with the landing page and follow the user journeys.</p>
+      <div class="button-row">
+        <button class="btn" type="button" id="clearChecks">Clear checklist</button>
+        <button class="btn primary" type="button" id="copyResults">Copy test report</button>
+      </div>
+    </section>
+
+    <section class="test-section">
+      <h2>1. Landing page and navigation</h2>
+      <p>Start at the public home page.</p>
+      <label class="test-item"><input type="checkbox" data-test="Landing page opens and displays the expected design."><span>Landing page opens and displays the expected design.<br><a href="index.html" target="_blank" rel="noopener">Open landing page</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student entry link opens the student login page."><span>Student entry link opens the student login page.<br><a href="student/login.html" target="_blank" rel="noopener">Open student login</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Employer entry link opens the employer login page."><span>Employer entry link opens the employer login page.<br><a href="employer/login.html" target="_blank" rel="noopener">Open employer login</a></span></label>
+    </section>
+
+    <section class="test-section">
+      <h2>2. Student journey</h2>
+      <p>Test the student pages using sample information only.</p>
+      <label class="test-item"><input type="checkbox" data-test="Student registration validation works as expected."><span>Student registration rejects invalid email, weak or mismatched passwords, and missing consent.<br><a href="student/register.html" target="_blank" rel="noopener">Open student registration</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student login and demo buttons respond without console errors."><span>Student login and demo buttons respond without console errors.<br><a href="student/login.html" target="_blank" rel="noopener">Open student login</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student dashboard navigation and sample job filters work."><span>Student dashboard navigation and sample job filters work.<br><a href="student/dashboard.html" target="_blank" rel="noopener">Open student dashboard</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student profile picture validation and preview work."><span>Student profile picture validation and preview work.<br><a href="student/profile.html" target="_blank" rel="noopener">Open student profile</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student resume preview and print action work."><span>Student resume preview and print action work.<br><a href="student/resume.html" target="_blank" rel="noopener">Open student resume</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Student support and settings pages open and respond."><span>Student support and settings pages open and respond.<br><a href="student/support.html" target="_blank" rel="noopener">Open student support</a> · <a href="student/settings.html" target="_blank" rel="noopener">Open settings</a></span></label>
+    </section>
+
+    <section class="test-section">
+      <h2>3. Employer and individual client journey</h2>
+      <p>Test account type selection, job posting, profile, and verification demo pages.</p>
+      <label class="test-item"><input type="checkbox" data-test="Employer registration account type and validation work."><span>Employer registration account type and validation work.<br><a href="employer/register.html" target="_blank" rel="noopener">Open employer registration</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Employer login and demo buttons respond."><span>Employer login and demo buttons respond.<br><a href="employer/login.html" target="_blank" rel="noopener">Open employer login</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Employer dashboard and job listing navigation work."><span>Employer dashboard and job listing navigation work.<br><a href="employer/dashboard.html" target="_blank" rel="noopener">Open employer dashboard</a> · <a href="employer/jobs.html" target="_blank" rel="noopener">Open jobs</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Post a Job form validates required information."><span>Post a Job form validates required information.<br><a href="employer/post-job.html" target="_blank" rel="noopener">Open Post a Job</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Employer profile, verification, support, and settings pages work."><span>Employer profile, verification, support, and settings pages work.<br><a href="employer/profile.html" target="_blank" rel="noopener">Profile</a> · <a href="employer/verification.html" target="_blank" rel="noopener">Verification</a> · <a href="employer/support.html" target="_blank" rel="noopener">Support</a> · <a href="employer/settings.html" target="_blank" rel="noopener">Settings</a></span></label>
+    </section>
+
+    <section class="test-section">
+      <h2>4. Admin journey</h2>
+      <p>Use fictional information; admin login accepts any non-empty credentials in this prototype.</p>
+      <label class="test-item"><input type="checkbox" data-test="Admin demo login opens the dashboard."><span>Admin demo login opens the dashboard.<br><a href="admin/login.html" target="_blank" rel="noopener">Open admin login</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Admin verification filters and demo approve or reject actions work."><span>Admin verification filters and demo approve/reject actions work.<br><a href="admin/verifications.html" target="_blank" rel="noopener">Open verifications</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Admin job listing filters and status actions work."><span>Admin job listing filters and status actions work.<br><a href="admin/jobs.html" target="_blank" rel="noopener">Open job listings</a></span></label>
+      <label class="test-item"><input type="checkbox" data-test="Admin reports and settings actions work."><span>Admin reports and settings actions work.<br><a href="admin/reports.html" target="_blank" rel="noopener">Open reports</a> · <a href="admin/settings.html" target="_blank" rel="noopener">Open settings</a></span></label>
+    </section>
+
+    <section class="test-section">
+      <h2>5. Browser console and responsive layout</h2>
+      <p>In Chrome or Edge, press F12 and open the Console tab. Look for red JavaScript errors while testing the pages.</p>
+      <label class="test-item"><input type="checkbox" data-test="No unexpected JavaScript errors appear in the browser console."><span>No unexpected JavaScript errors appear in the browser console.</span></label>
+      <label class="test-item"><input type="checkbox" data-test="Key pages remain usable at desktop and mobile widths."><span>Key pages remain usable at desktop and mobile widths.</span></label>
+    </section>
+
+    <section class="test-section">
+      <h2>Issues found</h2>
+      <p>Record broken links, buttons that do nothing, errors, or unexpected behavior.</p>
+      <textarea id="issues" placeholder="Example: Employer forgot-password rejects a normal client email."></textarea>
+      <p class="muted">Don't include passwords, real identity documents, or private account information.</p>
+      <div class="button-row">
+        <button class="btn success" type="button" id="copyFullReport">Copy checklist and issues</button>
+      </div>
+    </section>
+
+    <footer>SKILL2EARN · Frontend prototype · Supabase not connected</footer>
+  </main>
+
+  <script>
+    (() => {
+      const checks = [...document.querySelectorAll("[data-test]")];
+      const count = document.getElementById("count");
+      const percent = document.getElementById("percent");
+      const bar = document.getElementById("bar");
+      const message = document.getElementById("progressMessage");
+      const issues = document.getElementById("issues");
+
+      function updateProgress() {
+        const completed = checks.filter(item => item.checked).length;
+        const percentage = Math.round(completed / checks.length * 100);
+        count.textContent = `${completed} / ${checks.length}`;
+        percent.textContent = `${percentage}%`;
+        bar.style.width = `${percentage}%`;
+        message.textContent = completed === checks.length
+          ? "All manual checklist items are marked complete. Review your notes before proceeding."
+          : "Only mark a check after testing the corresponding page.";
+      }
+
+      function buildReport() {
+        const completed = checks.filter(item => item.checked).length;
+        const lines = [
+          "SKILL2EARN Step 7 manual frontend test results",
+          `Checklist completed: ${completed}/${checks.length}`,
+          "",
+          ...checks.map(item =>
+            `${item.checked ? "PASS" : "NOT TESTED"}: ${item.dataset.test}`
+          ),
+          "",
+          "Issues encountered:",
+          issues.value.trim() || "None reported",
+          "",
+          "Note: These are manually recorded test results; they do not represent an automated test run."
+        ];
+        return lines.join("\n");
+      }
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          const helper = document.createElement("textarea");
+          helper.value = text;
+          helper.style.position = "fixed";
+          helper.style.opacity = "0";
+          document.body.appendChild(helper);
+          helper.select();
+          const copied = document.execCommand("copy");
+          helper.remove();
+          return copied;
+        }
+      }
+
+      checks.forEach(item => item.addEventListener("change", updateProgress));
+
+      document.getElementById("clearChecks").addEventListener("click", () => {
+        if (!window.confirm("Clear all checked items?")) return;
+        checks.forEach(item => { item.checked = false; });
+        updateProgress();
+      });
+
+      document.getElementById("copyResults").addEventListener("click", async () => {
+        const copied = await copyText(buildReport());
+        message.textContent = copied ? "Test report copied." : "Copy failed. Please select and copy manually.";
+      });
+
+      document.getElementById("copyFullReport").addEventListener("click", async () => {
+        const copied = await copyText(buildReport());
+        message.textContent = copied ? "Checklist and issue notes copied." : "Copy failed. Please select and copy manually.";
+      });
+
+      updateProgress();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKILL2EARN - Registration Test</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #06111f;
+      color: #f8fafc;
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      padding: 32px;
+      background: #112036;
+      border: 1px solid #263b56;
+      border-radius: 18px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 32px;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #334b68;
+      border-radius: 8px;
+      background: #081526;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 15px;
+      border: none;
+      border-radius: 9px;
+      background: #2864ed;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px;
+      border: 1px solid #334b68;
+      border-radius: 10px;
+      background: #081526;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .warning {
+      color: #fcd34d;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #93c5fd;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <h1>SKILL2EARN</h1>
+
+    <h2>Supabase Registration Test</h2>
+
+    <p>
+      This test checks whether Supabase can register a test account.
+      It may create a real user in your Supabase Authentication user list.
+    </p>
+
+    <p class="warning">
+      Use an email address you control and a temporary password.
+      Do not use a password from another account.
+    </p>
+
+    <form id="signupForm">
+      <label for="email">Test Email Address</label>
+      <input
+        type="email"
+        id="email"
+        autocomplete="email"
+        placeholder="Enter an email you control"
+        required
+      >
+
+      <label for="password">Temporary Test Password</label>
+      <input
+        type="password"
+        id="password"
+        autocomplete="new-password"
+        minlength="8"
+        placeholder="At least 8 characters"
+        required
+      >
+
+      <button type="submit" id="signupButton">
+        Test User Registration
+      </button>
+    </form>
+
+    <div class="notice" id="result" role="status" aria-live="polite">
+      Ready. Enter your test email and temporary password.
+    </div>
+
+    <a class="back-link" href="supabase-auth-test.html">
+      Return to Authentication Connection Test
+    </a>
+  </main>
+
+  <!-- Load the Supabase JavaScript library first. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Load the existing shared SKILL2EARN client. -->
+  <script src="js/supabase-client.js"></script>
+
+  <script>
+    const form = document.getElementById("signupForm");
+    const button = document.getElementById("signupButton");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      button.disabled = true;
+      result.textContent = "Testing registration with Supabase...";
+
+      try {
+        if (!window.SKILL2EARN_SUPABASE_CONFIG) {
+          throw new Error(
+            "The shared Supabase client was not loaded. Check js/supabase-client.js."
+          );
+        }
+
+        const client =
+          window.SKILL2EARN_SUPABASE_CONFIG.getClient();
+
+        const { data, error } = await client.auth.signUp({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data.user) {
+          result.textContent =
+            "INCONCLUSIVE: Supabase returned no user. Check your Supabase Auth settings.";
+          return;
+        }
+
+        if (data.session) {
+          result.textContent =
+            "PASS: Supabase accepted the registration.\n\n" +
+            "User created: Yes\n" +
+            "User ID returned: Yes\n" +
+            "Session created: Yes\n\n" +
+            "This test created a real authentication account. " +
+            "Check Supabase Authentication to verify it.";
+        } else {
+          result.textContent =
+            "PASS: Supabase accepted the registration.\n\n" +
+            "User created: Yes\n" +
+            "User ID returned: Yes\n" +
+            "Session created: No\n\n" +
+            "This is normal when email confirmation is required. " +
+            "Check your inbox and Supabase Authentication to verify the account.";
+        }
+      } catch (error) {
+        result.textContent =
+          "FAIL: Registration was not confirmed.\n\n" +
+          "Error: " + (error.message || String(error)) +
+          "\n\nCheck your Supabase Auth settings and browser console. " +
+          "If the request timed out, check Supabase Authentication before retrying " +
+          "to avoid creating a duplicate test account.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

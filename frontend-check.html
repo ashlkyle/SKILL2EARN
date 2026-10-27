@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Health Check | SKILL2EARN</title>
+  <link rel="stylesheet" href="css/frontend-check.css">
+</head>
+<body>
+  <main class="check-shell">
+    <header class="check-header">
+      <a class="brand" href="index.html"><span class="brand-mark">S2</span><span><strong>SKILL2EARN</strong><small>Frontend diagnostics</small></span></a>
+      <span class="demo-tag">LOCAL TEST TOOL</span>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">STEP 6 · INTEGRATION</p>
+      <h1>Frontend health check</h1>
+      <p>Check that your main HTML, CSS, and JavaScript files are reachable through Live Server before connecting the backend.</p>
+      <div class="notice"><strong>What this checks:</strong> file availability and local CSS/JavaScript references in HTML pages. It does not prove authentication is secure, test every button, or connect to Supabase.</div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card"><span>Files checked</span><strong id="totalCount">—</strong></article>
+      <article class="summary-card"><span>Passed</span><strong id="passCount">—</strong></article>
+      <article class="summary-card"><span>Issues</span><strong id="failCount">—</strong></article>
+    </section>
+
+    <section class="results-panel">
+      <div class="panel-heading">
+        <div><h2>Project files</h2><p id="statusText">Ready to run checks.</p></div>
+        <button type="button" class="primary-button" id="runChecks">Run checks</button>
+      </div>
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <div id="results" class="results-list" aria-live="polite">
+        <p class="empty-state">Click “Run checks” to start.</p>
+      </div>
+    </section>
+
+    <section class="results-panel">
+      <h2>Manual browser checks</h2>
+      <p class="muted">After the file check, open these pages manually and test the buttons and navigation.</p>
+      <div class="manual-links">
+        <a href="index.html">Landing page</a>
+        <a href="student/login.html">Student login</a>
+        <a href="student/dashboard.html">Student dashboard</a>
+        <a href="employer/login.html">Employer login</a>
+        <a href="employer/dashboard.html">Employer dashboard</a>
+        <a href="admin/login.html">Admin login demo</a>
+        <a href="admin/dashboard.html">Admin dashboard</a>
+      </div>
+    </section>
+
+    <footer>SKILL2EARN · Frontend prototype · Backend not connected</footer>
+  </main>
+  <script src="js/frontend-check.js"></script>
+</body>
+</html>

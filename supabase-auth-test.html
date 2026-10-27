@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKILL2EARN - Authentication Test</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+            display: grid;
+            place-items: center;
+            background: #06111f;
+            color: #f8fafc;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            width: min(100%, 650px);
+            padding: 32px;
+            border: 1px solid #263d5b;
+            border-radius: 18px;
+            background: #101f34;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+        }
+
+        p {
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        button {
+            display: block;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            margin-top: 16px;
+            padding: 15px;
+            border: 0;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid #263d5b;
+            border-radius: 10px;
+            background: #081526;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card">
+        <h1>SKILL2EARN</h1>
+
+        <p>Supabase Authentication Connection Test</p>
+
+        <p>
+            This test checks the existing shared Supabase client.
+            It does not create accounts or modify database records.
+        </p>
+
+        <button id="testButton" type="button">
+            Test Authentication Connection
+        </button>
+
+        <div id="result" role="status" aria-live="polite">
+            Ready to test.
+        </div>
+    </main>
+
+    <!-- Load the Supabase JavaScript library first. -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Load your existing shared client configuration. -->
+    <script src="js/supabase-client.js"></script>
+
+    <!-- Register the click handler without ES module imports. -->
+    <script>
+        (function () {
+            "use strict";
+
+            const button = document.getElementById("testButton");
+            const result = document.getElementById("result");
+
+            button.addEventListener("click", async function () {
+                button.disabled = true;
+                result.textContent = "Testing Supabase Authentication...";
+
+                try {
+                    const config = window.SKILL2EARN_SUPABASE_CONFIG;
+
+                    if (!config || typeof config.getClient !== "function") {
+                        throw new Error(
+                            "Shared Supabase configuration was not loaded. " +
+                            "Check js/supabase-client.js."
+                        );
+                    }
+
+                    const client = config.getClient();
+
+                    const { data, error } = await client.auth.getSession();
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    result.textContent =
+                        "PASS: Supabase Authentication client responded.\n\n" +
+                        "Client initialized: Yes\n" +
+                        "Authentication request: Successful\n" +
+                        "Existing session: " +
+                        (data.session ? "Present" : "None") +
+                        "\n\nNo account was created and no database records were changed.";
+                } catch (error) {
+                    result.textContent =
+                        "FAIL: Authentication connection test did not complete.\n\n" +
+                        "Message: " +
+                        (error && error.message
+                            ? error.message
+                            : String(error)) +
+                        "\n\nCheck your shared client configuration, project URL, " +
+                        "publishable key, and browser console.";
+
+                    console.error("SKILL2EARN Auth Test:", error);
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

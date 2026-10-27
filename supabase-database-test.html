@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKILL2EARN - Database Test</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      color: #e8f0ff;
+      background: #07111f;
+    }
+
+    main {
+      width: 100%;
+      max-width: 620px;
+      padding: 28px;
+      background: #101e32;
+      border: 1px solid #263d5c;
+      border-radius: 16px;
+    }
+
+    h1 { margin-top: 0; }
+
+    p {
+      color: #b6c7df;
+      line-height: 1.6;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #result {
+      margin-top: 18px;
+      padding: 14px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.6;
+      border: 1px solid #263d5c;
+      border-radius: 9px;
+      background: #091526;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>SKILL2EARN</h1>
+    <p>Database API diagnostic</p>
+
+    <p>
+      This test sends a read-only request for at most one profile ID.
+      It does not create, update, or delete records.
+    </p>
+
+    <button id="testButton" type="button">
+      Test Database Access
+    </button>
+
+    <div id="result" role="status" aria-live="polite">
+      Ready to test.
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    const button = document.querySelector("#testButton");
+    const result = document.querySelector("#result");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      result.textContent = "Checking the database API...";
+
+      try {
+        const config = window.SKILL2EARN_SUPABASE_CONFIG;
+
+        if (!config || !config.isConfigured()) {
+          throw new Error(
+            "Supabase is not configured. Check js/supabase-client.js."
+          );
+        }
+
+        const client = config.getClient();
+
+        const { data, error, status } = await client
+          .from("profiles")
+          .select("id")
+          .limit(1);
+
+        if (error) {
+          result.textContent =
+            "DATABASE REQUEST RETURNED AN ERROR\n\n" +
+            "HTTP status: " + status + "\n" +
+            "Message: " + error.message + "\n\n" +
+            "This may indicate a missing table, API configuration issue, " +
+            "or a permissions problem. Share the exact message to diagnose it.";
+          return;
+        }
+
+        result.textContent =
+          "PASS: The database API accepted the read-only request.\n\n" +
+          "HTTP status: " + status + "\n" +
+          "Rows visible to the current session: " + data.length + "\n\n" +
+          (data.length === 0
+            ? "Zero visible rows can be normal: the table may be empty, " +
+              "or Row Level Security may hide rows from an unauthenticated visitor."
+            : "At least one row is visible to this session.") +
+          "\n\nThis does not yet verify access for signed-in students, " +
+          "employers, or admins.";
+      } catch (error) {
+        result.textContent =
+          "TEST FAILED\n\n" +
+          (error && error.message
+            ? error.message
+            : "An unexpected error occurred.") +
+          "\n\nCheck the Project URL, publishable key, network, and browser console.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
